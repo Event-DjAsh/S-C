@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Calendar, MapPin, Mail, Phone, User, Clock, CheckCircle2, Send, Sparkles, AlertCircle } from 'lucide-react';
-import { DJ_PACKAGES, PACKAGE_ADD_ONS, AUCKLAND_VENUES } from '../data/djData';
+import { Calendar, MapPin, Mail, Phone, User, CheckCircle2, Send, AlertCircle } from 'lucide-react';
+import { DJ_PACKAGES, AUCKLAND_VENUES } from '../data/djData';
 import { EventType } from '../types';
 
 interface InquiryFormProps {
@@ -30,7 +30,6 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  // Update if props change
   React.useEffect(() => {
     if (initialPackageId) {
       setFormData(prev => ({
@@ -60,7 +59,6 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
     }
 
     setIsSubmitting(true);
-    // Simulate real submission
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitted(true);
@@ -74,7 +72,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <div className="text-xs font-semibold tracking-wider text-amber-400 uppercase mb-2">
+          <div className="text-xs font-semibold tracking-wider text-purple-400 uppercase mb-2">
             Check Calendar & Lock In Date
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-display">
@@ -86,12 +84,12 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
         </div>
 
         {submitted ? (
-          <div className="bg-stone-900 border border-amber-400/60 rounded-2xl p-8 sm:p-10 text-center animate-in fade-in duration-300 shadow-2xl">
-            <div className="w-16 h-16 bg-amber-400/10 border border-amber-400/40 rounded-full flex items-center justify-center mx-auto mb-6 text-amber-400">
+          <div className="bg-stone-900 border border-purple-500/60 rounded-2xl p-8 sm:p-10 text-center animate-in fade-in duration-300 shadow-2xl">
+            <div className="w-16 h-16 bg-purple-500/10 border border-purple-500/40 rounded-full flex items-center justify-center mx-auto mb-6 text-purple-400">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
-            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+            <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">
               Inquiry Confirmed
             </span>
             <h3 className="text-2xl sm:text-3xl font-bold text-white font-display mt-2">
@@ -117,7 +115,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
               </div>
               <div className="flex justify-between pt-2 border-t border-stone-800">
                 <span className="text-stone-400">Estimated Total:</span>
-                <span className="font-bold text-amber-400 text-sm tabular-nums">${initialEstimate.toLocaleString()} NZD</span>
+                <span className="font-bold text-purple-400 text-sm tabular-nums">${initialEstimate.toLocaleString()} NZD</span>
               </div>
             </div>
 
@@ -162,7 +160,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                     value={formData.fullName}
                     onChange={handleChange}
                     placeholder="e.g. Sophie Turner & Liam"
-                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                   />
                 </div>
               </div>
@@ -181,7 +179,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="sophie@example.co.nz"
-                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                   />
                 </div>
               </div>
@@ -199,7 +197,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+64 21 000 0000"
-                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                   />
                 </div>
               </div>
@@ -217,7 +215,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                     required
                     value={formData.eventDate}
                     onChange={handleChange}
-                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                   />
                 </div>
               </div>
@@ -231,7 +229,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                   name="eventType"
                   value={formData.eventType}
                   onChange={handleChange}
-                  className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                  className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                 >
                   <option value="wedding">Wedding (Ceremony & Reception)</option>
                   <option value="corporate">Corporate Gala or Awards Night</option>
@@ -239,7 +237,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                 </select>
               </div>
 
-              {/* Venue Selector / Custom Input */}
+              {/* Venue Selector */}
               <div>
                 <label className="block text-xs font-semibold uppercase tracking-wider text-stone-300 mb-2">
                   Auckland Venue or Location
@@ -253,7 +251,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                     onChange={handleChange}
                     placeholder="e.g. Mudbrick Vineyard or Cordis Hotel"
                     list="venue-suggestions"
-                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                    className="w-full bg-stone-950 border border-stone-800 rounded-lg pl-10 pr-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                   />
                   <datalist id="venue-suggestions">
                     {AUCKLAND_VENUES.map(v => (
@@ -279,7 +277,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                   name="packageId"
                   value={formData.packageId}
                   onChange={handleChange}
-                  className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                  className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                 >
                   {DJ_PACKAGES.map(p => (
                     <option key={p.id} value={p.id}>
@@ -301,7 +299,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                   value={formData.guestCount}
                   onChange={handleChange}
                   placeholder="e.g. 120"
-                  className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                  className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                 />
               </div>
             </div>
@@ -317,7 +315,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                 value={formData.notes}
                 onChange={handleChange}
                 placeholder="Tell us about your event timeline, whether you need MC duties, preferred genres (e.g., 90s R&B, Kiwi dub, House), or any acoustic questions..."
-                className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition-colors"
+                className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white placeholder-stone-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
               />
             </div>
 
@@ -330,7 +328,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full sm:w-auto px-8 py-3.5 text-sm font-bold text-stone-950 bg-amber-400 hover:bg-amber-300 disabled:opacity-50 rounded-xl transition-all duration-150 flex items-center justify-center gap-2 shadow-lg shadow-amber-400/10 active:scale-[0.98]"
+                className="w-full sm:w-auto px-8 py-3.5 text-sm font-bold text-white bg-purple-600 hover:bg-purple-500 disabled:opacity-50 rounded-xl transition-all duration-150 flex items-center justify-center gap-2 shadow-lg shadow-purple-600/35 active:scale-[0.98]"
               >
                 {isSubmitting ? (
                   <span>Checking Calendar...</span>

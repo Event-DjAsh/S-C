@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, Mic, Music, Speaker, ShieldCheck, Clock, Users, ArrowUpRight } from 'lucide-react';
+import { Check, ArrowUpRight } from 'lucide-react';
 import weddingImg from '../assets/images/service_wedding_dj_1790753867187.jpg';
 import corporateImg from '../assets/images/service_corporate_dj_1790753853648.jpg';
 import partyImg from '../assets/images/service_party_dj_1790753880384.jpg';
@@ -17,7 +17,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
         
         {/* Section Header */}
         <div className="max-w-3xl mb-12">
-          <div className="text-xs font-semibold tracking-wider text-amber-400 uppercase mb-2">
+          <div className="text-xs font-semibold tracking-wider text-purple-400 uppercase mb-2">
             Tailored Entertainment
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-display text-balance">
@@ -28,13 +28,13 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
           </p>
         </div>
 
-        {/* Interactive Segmented Filter Control (allowed by skill for interactive states) */}
+        {/* Interactive Segmented Filter Control */}
         <div className="flex items-center gap-1.5 p-1.5 bg-stone-900/90 border border-stone-800 rounded-xl max-w-md mb-10">
           <button
             onClick={() => setActiveTab('wedding')}
             className={`flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-150 ${
               activeTab === 'wedding'
-                ? 'bg-amber-400 text-stone-950 shadow-sm'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
                 : 'text-stone-400 hover:text-stone-100'
             }`}
           >
@@ -44,7 +44,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
             onClick={() => setActiveTab('corporate')}
             className={`flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-150 ${
               activeTab === 'corporate'
-                ? 'bg-amber-400 text-stone-950 shadow-sm'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
                 : 'text-stone-400 hover:text-stone-100'
             }`}
           >
@@ -54,7 +54,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
             onClick={() => setActiveTab('party')}
             className={`flex-1 py-2.5 px-3 text-xs sm:text-sm font-semibold rounded-lg transition-all duration-150 ${
               activeTab === 'party'
-                ? 'bg-amber-400 text-stone-950 shadow-sm'
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-600/30'
                 : 'text-stone-400 hover:text-stone-100'
             }`}
           >
@@ -69,7 +69,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               <div className="text-xs text-stone-400 font-medium tracking-wide">
                 <span>01. WEDDING CELEBRATIONS</span>
                 <span className="mx-2">·</span>
-                <span className="text-amber-400">CEREMONY TO LAST DANCE</span>
+                <span className="text-purple-400 font-semibold">CEREMONY TO LAST DANCE</span>
               </div>
 
               <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
@@ -82,19 +82,19 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-stone-200">
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Battery outdoor ceremony PA (no noisy generators)</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Discreet skin-tone lapel mics for celebrant & vows</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Full MC service available for smooth timeline flow</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Custom First Dance edits & low-fog cloud effects</span>
                 </div>
               </div>
@@ -102,7 +102,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <button
                   onClick={() => onSelectServiceForQuote('wedding')}
-                  className="inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-semibold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors shadow-md shadow-purple-600/30"
                 >
                   <span>Build Wedding Package Quote</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -114,7 +114,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
             </div>
 
             <div className="lg:col-span-6">
-              <div className="rounded-xl overflow-hidden border border-stone-800 shadow-xl relative group">
+              <div className="rounded-xl overflow-hidden border border-stone-800 hover:border-purple-500/50 transition-colors shadow-xl relative group">
                 <img 
                   src={weddingImg} 
                   alt="Auckland wedding reception dancefloor packed with happy couple and guests dancing under marquee lights"
@@ -137,7 +137,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               <div className="text-xs text-stone-400 font-medium tracking-wide">
                 <span>02. CORPORATE PRODUCTIONS</span>
                 <span className="mx-2">·</span>
-                <span className="text-amber-400">GALAS, AWARDS & ACTIVATIONS</span>
+                <span className="text-purple-400 font-semibold">GALAS, AWARDS & ACTIVATIONS</span>
               </div>
 
               <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
@@ -150,19 +150,19 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-stone-200">
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Up to 4x Shure wireless handheld speech microphones</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Custom award walk-up music stingers matched to cues</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>$10,000,000 Public Liability Insurance for all venues</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Black-tie or business attire dress code adhered to</span>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <button
                   onClick={() => onSelectServiceForQuote('corporate')}
-                  className="inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-semibold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors shadow-md shadow-purple-600/30"
                 >
                   <span>Request Corporate Quote</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -182,7 +182,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
             </div>
 
             <div className="lg:col-span-6">
-              <div className="rounded-xl overflow-hidden border border-stone-800 shadow-xl relative group">
+              <div className="rounded-xl overflow-hidden border border-stone-800 hover:border-purple-500/50 transition-colors shadow-xl relative group">
                 <img 
                   src={corporateImg} 
                   alt="Corporate awards night DJ booth setup with sleek audio console and stage lighting in Auckland"
@@ -205,7 +205,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               <div className="text-xs text-stone-400 font-medium tracking-wide">
                 <span>03. PRIVATE CELEBRATIONS</span>
                 <span className="mx-2">·</span>
-                <span className="text-amber-400">21ST, 30TH, 40TH & 50TH BIRTHDAYS</span>
+                <span className="text-purple-400 font-semibold">21ST, 30TH, 40TH & 50TH BIRTHDAYS</span>
               </div>
 
               <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
@@ -218,19 +218,19 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-stone-200">
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>High-output low-frequency subwoofers for punchy club bass</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Computer-synchronized laser and prism dancefloor lighting</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Spotify playlist collaboration & song requests welcomed</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
                   <span>Cordless mic included for birthday speeches & toasts</span>
                 </div>
               </div>
@@ -238,7 +238,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               <div className="pt-4 flex flex-wrap items-center gap-4">
                 <button
                   onClick={() => onSelectServiceForQuote('private_party')}
-                  className="inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-semibold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded transition-colors"
+                  className="inline-flex items-center gap-2 px-5 py-3 text-xs sm:text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-lg transition-colors shadow-md shadow-purple-600/30"
                 >
                   <span>Book Private Party DJ</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -250,10 +250,10 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
             </div>
 
             <div className="lg:col-span-6">
-              <div className="rounded-xl overflow-hidden border border-stone-800 shadow-xl relative group">
+              <div className="rounded-xl overflow-hidden border border-stone-800 hover:border-purple-500/50 transition-colors shadow-xl relative group">
                 <img 
                   src={partyImg} 
-                  alt="Auckland private party crowd dancing enthusiastically in an atmospheric event space with amber lighting"
+                  alt="Auckland private party crowd dancing enthusiastically in an atmospheric event space with ambient lighting"
                   className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
                   referrerPolicy="no-referrer"
                 />

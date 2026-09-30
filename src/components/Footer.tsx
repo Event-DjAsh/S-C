@@ -1,11 +1,8 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Facebook, ShieldCheck, Heart } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Facebook, ShieldCheck } from 'lucide-react';
+import logoImg from '../assets/images/logo_hot_purple_1790761643176.jpg';
 
-interface FooterProps {
-  onOpenGithubGuide: () => void;
-}
-
-export const Footer: React.FC<FooterProps> = ({ onOpenGithubGuide }) => {
+export const Footer: React.FC = () => {
   return (
     <footer className="bg-stone-950 text-stone-400 border-t border-stone-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -14,9 +11,20 @@ export const Footer: React.FC<FooterProps> = ({ onOpenGithubGuide }) => {
           
           {/* Brand & Mission (2 Cols) */}
           <div className="lg:col-span-2 space-y-4">
-            <span className="text-xl font-bold tracking-tight text-white font-display">
-              Sound & Celebration
-            </span>
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl overflow-hidden border border-purple-500/60 shadow-md shadow-purple-600/30 bg-black shrink-0">
+                <img 
+                  src={logoImg} 
+                  alt="Sound & Celebration Logo" 
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              </div>
+              <span className="text-xl font-bold tracking-tight text-white font-display">
+                Sound & Celebration
+              </span>
+            </div>
+            
             <p className="text-stone-400 text-xs sm:text-sm leading-relaxed max-w-sm">
               Premier DJ and Master of Ceremonies hire based in Auckland, New Zealand. Delivering refined sound, bespoke music programming, and high-energy dancefloors for luxury weddings, corporate galas, and milestone parties.
             </p>
@@ -25,7 +33,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenGithubGuide }) => {
                 href="https://instagram.com" 
                 target="_blank" 
                 rel="noreferrer"
-                className="hover:text-amber-400 transition-colors p-1"
+                className="hover:text-purple-400 transition-colors p-1"
                 aria-label="Instagram"
               >
                 <Instagram className="w-4 h-4" />
@@ -34,17 +42,11 @@ export const Footer: React.FC<FooterProps> = ({ onOpenGithubGuide }) => {
                 href="https://facebook.com" 
                 target="_blank" 
                 rel="noreferrer"
-                className="hover:text-amber-400 transition-colors p-1"
+                className="hover:text-purple-400 transition-colors p-1"
                 aria-label="Facebook"
               >
                 <Facebook className="w-4 h-4" />
               </a>
-              <button
-                onClick={onOpenGithubGuide}
-                className="text-[11px] text-stone-400 hover:text-amber-400 underline underline-offset-4 ml-2"
-              >
-                GitHub Pages Guide
-              </button>
             </div>
           </div>
 
@@ -54,16 +56,16 @@ export const Footer: React.FC<FooterProps> = ({ onOpenGithubGuide }) => {
               Navigation
             </div>
             <ul className="space-y-2">
-              <li><a href="#services" className="hover:text-amber-400 transition-colors">DJ Services</a></li>
-              <li><a href="#pricing" className="hover:text-amber-400 transition-colors">Packages & Pricing</a></li>
-              <li><a href="#venues" className="hover:text-amber-400 transition-colors">Auckland Venues</a></li>
-              <li><a href="#music-sets" className="hover:text-amber-400 transition-colors">Music Vibes</a></li>
-              <li><a href="#reviews" className="hover:text-amber-400 transition-colors">Client Testimonials</a></li>
-              <li><a href="#faq" className="hover:text-amber-400 transition-colors">FAQ</a></li>
+              <li><a href="#services" className="hover:text-purple-400 transition-colors">DJ Services</a></li>
+              <li><a href="#pricing" className="hover:text-purple-400 transition-colors">Packages & Pricing</a></li>
+              <li><a href="#venues" className="hover:text-purple-400 transition-colors">Auckland Venues</a></li>
+              <li><a href="#music-sets" className="hover:text-purple-400 transition-colors">Music Vibes</a></li>
+              <li><a href="#reviews" className="hover:text-purple-400 transition-colors">Client Testimonials</a></li>
+              <li><a href="#faq" className="hover:text-purple-400 transition-colors">FAQ</a></li>
             </ul>
           </div>
 
-          {/* Local Service Regions (SEO Powerhouse) */}
+          {/* Local Service Regions */}
           <div className="space-y-3">
             <div className="text-xs font-semibold uppercase tracking-wider text-white">
               Auckland Service Areas
@@ -85,17 +87,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenGithubGuide }) => {
             </div>
             <div className="space-y-2 text-stone-400">
               <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <MapPin className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                 <span>Auckland, New Zealand</span>
               </div>
               <div className="flex items-center gap-2">
-                <Phone className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <Phone className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                 <a href="tel:+6421892411" className="hover:text-white transition-colors">
                   +64 21 892 411
                 </a>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <Mail className="w-3.5 h-3.5 text-purple-400 shrink-0" />
                 <a href="mailto:hello@soundandcelebration.co.nz" className="hover:text-white transition-colors">
                   hello@soundandcelebration.co.nz
                 </a>
@@ -111,7 +113,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenGithubGuide }) => {
 
         </div>
 
-        {/* Bottom Bar: Copyright & Domain confirmation */}
+        {/* Bottom Bar: Copyright */}
         <div className="pt-8 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
           <div>
             &copy; {new Date().getFullYear()} Sound & Celebration (soundandcelebration.co.nz). All rights reserved.

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Pause, Volume2, Disc, Music2, ListMusic, CheckCircle2 } from 'lucide-react';
+import { Play, Pause, Disc, Music2, ListMusic, CheckCircle2 } from 'lucide-react';
 import { MUSIC_SETS } from '../data/djData';
 
 export const MusicVibePlayer: React.FC = () => {
@@ -10,7 +10,6 @@ export const MusicVibePlayer: React.FC = () => {
 
   const activeSet = MUSIC_SETS.find(s => s.id === activeSetId) || MUSIC_SETS[0];
 
-  // Stop synthetic audio when component unmounts or active set changes
   const stopAudio = () => {
     if (intervalRef.current) {
       window.clearInterval(intervalRef.current);
@@ -51,7 +50,6 @@ export const MusicVibePlayer: React.FC = () => {
       const beatIntervalMs = (60 / bpm) * 1000;
       let step = 0;
 
-      // Play a musical rhythm snippet based on mood
       intervalRef.current = window.setInterval(() => {
         if (!ctx || ctx.state === 'closed') return;
         const now = ctx.currentTime;
@@ -120,7 +118,7 @@ export const MusicVibePlayer: React.FC = () => {
         
         {/* Header */}
         <div className="max-w-3xl mb-12">
-          <div className="text-xs font-semibold tracking-wider text-amber-400 uppercase mb-2">
+          <div className="text-xs font-semibold tracking-wider text-purple-400 uppercase mb-2">
             Soundtrack Curation
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-display text-balance">
@@ -141,12 +139,12 @@ export const MusicVibePlayer: React.FC = () => {
                 onClick={() => handleSelectSet(set.id)}
                 className={`p-4 rounded-xl text-left border transition-all ${
                   isSelected
-                    ? 'border-amber-400 bg-stone-900 shadow-md ring-1 ring-amber-400/40'
+                    ? 'border-purple-500 bg-stone-900 shadow-md ring-1 ring-purple-500/50'
                     : 'border-stone-800 bg-stone-900/40 text-stone-400 hover:border-stone-700 hover:text-stone-200'
                 }`}
               >
                 <div className="flex items-center justify-between mb-1.5">
-                  <Disc className={`w-4 h-4 ${isSelected ? 'text-amber-400 animate-spin' : 'text-stone-500'}`} />
+                  <Disc className={`w-4 h-4 ${isSelected ? 'text-purple-400 animate-spin' : 'text-stone-500'}`} />
                   <span className="text-[11px] font-mono tabular-nums text-stone-400">{set.bpm} BPM</span>
                 </div>
                 <div className="font-bold text-sm text-white line-clamp-1">{set.title}</div>
@@ -162,7 +160,7 @@ export const MusicVibePlayer: React.FC = () => {
           {/* Left Column: Player Controls & Audio Preview */}
           <div className="lg:col-span-5 space-y-6">
             <div>
-              <div className="flex items-center gap-2 text-xs text-amber-400 font-semibold mb-1">
+              <div className="flex items-center gap-2 text-xs text-purple-400 font-semibold mb-1">
                 <Music2 className="w-3.5 h-3.5" />
                 <span>{activeSet.bpm} BPM Rhythm Profile</span>
               </div>
@@ -176,19 +174,19 @@ export const MusicVibePlayer: React.FC = () => {
                 <span className="text-xs font-semibold uppercase tracking-wider text-stone-400">
                   Interactive Groove Preview
                 </span>
-                <span className="text-[11px] text-amber-400 font-mono">
+                <span className="text-[11px] text-purple-400 font-mono">
                   {isPlaying ? 'LIVE AUDIO ACTIVE' : 'CLICK TO AUDITION'}
                 </span>
               </div>
 
-              {/* Animated Waveform Visualizer */}
+              {/* Animated Waveform Visualizer in Hot Purple */}
               <div className="h-12 flex items-center justify-between gap-1 px-2 bg-stone-900/80 rounded-lg overflow-hidden">
                 {Array.from({ length: 32 }).map((_, i) => (
                   <div
                     key={i}
                     className={`w-1 rounded-full transition-all duration-150 ${
                       isPlaying
-                        ? 'bg-amber-400 animate-pulse'
+                        ? 'bg-purple-400 shadow-sm shadow-purple-500 animate-pulse'
                         : 'bg-stone-700'
                     }`}
                     style={{
@@ -201,19 +199,19 @@ export const MusicVibePlayer: React.FC = () => {
                 ))}
               </div>
 
-              {/* Play / Stop Button */}
+              {/* Play / Stop Button in Hot Purple */}
               <button
                 onClick={handleTogglePlay}
-                className="w-full py-3 px-4 rounded-lg bg-amber-400 hover:bg-amber-300 text-stone-950 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.99]"
+                className="w-full py-3 px-4 rounded-lg bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md shadow-purple-600/35 active:scale-[0.99]"
               >
                 {isPlaying ? (
                   <>
-                    <Pause className="w-4 h-4 fill-stone-950" />
+                    <Pause className="w-4 h-4 fill-white" />
                     <span>Pause Beat Preview</span>
                   </>
                 ) : (
                   <>
-                    <Play className="w-4 h-4 fill-stone-950 ml-0.5" />
+                    <Play className="w-4 h-4 fill-white ml-0.5" />
                     <span>Play {activeSet.bpm} BPM Groove Preview</span>
                   </>
                 )}
@@ -223,15 +221,15 @@ export const MusicVibePlayer: React.FC = () => {
             {/* Music Policy Pillars */}
             <div className="space-y-2 pt-2 text-xs text-stone-300">
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
                 <span>Strict <strong>&quot;Do Not Play&quot;</strong> blacklist honored with 100% fidelity</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
                 <span>Direct Spotify & Apple Music playlist sync before your event</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
+                <CheckCircle2 className="w-4 h-4 text-purple-400 shrink-0" />
                 <span>Seamless guest request filtering—no room-clearing songs allowed</span>
               </div>
             </div>
@@ -241,7 +239,7 @@ export const MusicVibePlayer: React.FC = () => {
           <div className="lg:col-span-7 bg-stone-950/70 border border-stone-800/80 rounded-xl p-6">
             <div className="flex items-center justify-between pb-3 border-b border-stone-800">
               <div className="flex items-center gap-2">
-                <ListMusic className="w-4 h-4 text-amber-400" />
+                <ListMusic className="w-4 h-4 text-purple-400" />
                 <span className="text-xs font-bold uppercase tracking-wider text-stone-300">
                   Sample Tracklist Progression
                 </span>
@@ -262,7 +260,7 @@ export const MusicVibePlayer: React.FC = () => {
                     <span className="text-xs font-mono text-stone-500 tabular-nums w-5">
                       0{idx + 1}
                     </span>
-                    <span className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-amber-400 transition-colors">
+                    <span className="text-xs sm:text-sm font-medium text-stone-200 group-hover:text-purple-400 transition-colors">
                       {track}
                     </span>
                   </div>
@@ -275,7 +273,7 @@ export const MusicVibePlayer: React.FC = () => {
 
             <div className="mt-6 pt-4 border-t border-stone-800 text-[11px] text-stone-400 flex items-center justify-between">
               <span>Have a specific genre in mind? (Afrobeats, Latin, 80s Synth, Rock)</span>
-              <span className="text-amber-400 font-semibold">100% Customized</span>
+              <span className="text-purple-400 font-semibold">100% Customized</span>
             </div>
           </div>
 

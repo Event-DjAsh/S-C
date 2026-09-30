@@ -1,5 +1,5 @@
 import React from 'react';
-import { Star, Quote, Award } from 'lucide-react';
+import { Star, Award } from 'lucide-react';
 import { TESTIMONIALS } from '../data/djData';
 
 export const ReviewsSection: React.FC = () => {
@@ -10,7 +10,7 @@ export const ReviewsSection: React.FC = () => {
         {/* Header & Overall Rating Aggregate */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
           <div className="max-w-2xl">
-            <div className="text-xs font-semibold tracking-wider text-amber-400 uppercase mb-2">
+            <div className="text-xs font-semibold tracking-wider text-purple-400 uppercase mb-2">
               Social Proof & Testimonials
             </div>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-display text-balance">
@@ -22,12 +22,12 @@ export const ReviewsSection: React.FC = () => {
           </div>
 
           {/* Aggregate Rating Banner */}
-          <div className="bg-stone-950 border border-stone-800 rounded-xl p-4 shrink-0 flex items-center gap-4">
+          <div className="bg-stone-950 border border-purple-500/40 rounded-xl p-4 shrink-0 flex items-center gap-4 shadow-lg shadow-purple-950/50">
             <div className="flex flex-col items-center">
               <span className="text-3xl font-extrabold text-white font-display tabular-nums">5.0</span>
-              <div className="flex items-center text-amber-400 gap-0.5 mt-0.5">
+              <div className="flex items-center text-purple-400 gap-0.5 mt-0.5">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
+                  <Star key={i} className="w-3.5 h-3.5 fill-purple-400" />
                 ))}
               </div>
             </div>
@@ -44,14 +44,14 @@ export const ReviewsSection: React.FC = () => {
           {TESTIMONIALS.map(t => (
             <div 
               key={t.id}
-              className="bg-stone-950 border border-stone-800/80 rounded-2xl p-6 sm:p-8 flex flex-col justify-between hover:border-amber-400/40 transition-colors relative"
+              className="bg-stone-950 border border-stone-800/80 rounded-2xl p-6 sm:p-8 flex flex-col justify-between hover:border-purple-500/50 transition-colors relative"
             >
               <div>
-                {/* Star rating and venue metadata (NO PILLS) */}
+                {/* Star rating and venue metadata */}
                 <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center text-amber-400 gap-1">
+                  <div className="flex items-center text-purple-400 gap-1">
                     {[...Array(t.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-amber-400" />
+                      <Star key={i} className="w-4 h-4 fill-purple-400" />
                     ))}
                   </div>
                   <div className="text-xs text-stone-500 font-medium">
@@ -59,7 +59,7 @@ export const ReviewsSection: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="text-sm font-semibold text-amber-300 mb-2">
+                <div className="text-sm font-semibold text-purple-300 mb-2">
                   &ldquo;{t.highlight}&rdquo;
                 </div>
 
@@ -78,7 +78,7 @@ export const ReviewsSection: React.FC = () => {
                     <span className="text-stone-300">{t.venue}</span>
                   </div>
                 </div>
-                <Award className="w-5 h-5 text-amber-400/70 shrink-0" />
+                <Award className="w-5 h-5 text-purple-400/80 shrink-0" />
               </div>
 
             </div>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MapPin, VolumeX, Clock, Building2, Check, ShieldCheck } from 'lucide-react';
+import { MapPin, VolumeX, Clock, ShieldCheck } from 'lucide-react';
 import { AUCKLAND_VENUES } from '../data/djData';
 
 export const AucklandVenues: React.FC = () => {
@@ -23,7 +23,7 @@ export const AucklandVenues: React.FC = () => {
         
         {/* Header */}
         <div className="max-w-3xl mb-12">
-          <div className="text-xs font-semibold tracking-wider text-amber-400 uppercase mb-2">
+          <div className="text-xs font-semibold tracking-wider text-purple-400 uppercase mb-2">
             Local Auckland Expertise
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-display text-balance">
@@ -42,7 +42,7 @@ export const AucklandVenues: React.FC = () => {
               onClick={() => setSelectedRegion(r.id)}
               className={`px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
                 selectedRegion === r.id
-                  ? 'bg-amber-400 text-stone-950 font-semibold'
+                  ? 'bg-purple-600 text-white font-semibold shadow-md shadow-purple-600/30'
                   : 'bg-stone-900/80 text-stone-400 hover:text-stone-200 border border-stone-800'
               }`}
             >
@@ -56,11 +56,11 @@ export const AucklandVenues: React.FC = () => {
           {filteredVenues.map(venue => (
             <div
               key={venue.id}
-              className="bg-stone-950 border border-stone-800/80 rounded-xl p-6 hover:border-amber-400/50 transition-all flex flex-col justify-between"
+              className="bg-stone-950 border border-stone-800/80 rounded-xl p-6 hover:border-purple-500/50 transition-all flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className="text-[11px] font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+                  <span className="text-[11px] font-semibold text-purple-400 uppercase tracking-wider flex items-center gap-1">
                     <MapPin className="w-3 h-3" />
                     {venue.region}
                   </span>
@@ -79,7 +79,7 @@ export const AucklandVenues: React.FC = () => {
 
                 <div className="p-3 bg-stone-900/70 border border-stone-800/80 rounded-lg space-y-2 mb-4">
                   <div className="text-[11px] font-semibold text-stone-300 flex items-center gap-1.5">
-                    <VolumeX className="w-3.5 h-3.5 text-amber-400" />
+                    <VolumeX className="w-3.5 h-3.5 text-purple-400" />
                     <span>Acoustic & Limiter Notes:</span>
                   </div>
                   <p className="text-[11px] text-stone-400 leading-tight">
@@ -94,7 +94,7 @@ export const AucklandVenues: React.FC = () => {
                   Curfew: {venue.curfew}
                 </span>
                 <span className="text-stone-400 font-medium flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-purple-400" />
                   Verified Partner
                 </span>
               </div>
@@ -112,7 +112,7 @@ export const AucklandVenues: React.FC = () => {
           </div>
           <a
             href="#inquiry"
-            className="px-4 py-2.5 bg-stone-900 hover:bg-stone-800 text-amber-400 border border-stone-700 font-semibold rounded shrink-0 transition-colors"
+            className="px-4 py-2.5 bg-stone-900 hover:bg-stone-800 text-purple-300 border border-stone-700 hover:border-purple-500/50 font-semibold rounded shrink-0 transition-colors"
           >
             Check Custom Venue Feasibility
           </a>

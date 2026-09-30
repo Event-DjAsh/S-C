@@ -1,5 +1,5 @@
 import React, { useState, useId } from 'react';
-import { Check, Plus, Minus, Calculator, Sparkles, Shield, ArrowRight } from 'lucide-react';
+import { Check, Calculator, Shield, ArrowRight } from 'lucide-react';
 import { DJ_PACKAGES, PACKAGE_ADD_ONS } from '../data/djData';
 import { EventType } from '../types';
 
@@ -21,10 +21,9 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
   );
 
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
-  const [guestTier, setGuestTier] = useState<string>('medium'); // small (<80), medium (80-150), large (150-250), extra (250+)
+  const [guestTier, setGuestTier] = useState<string>('medium');
   const guestSizeId = useId();
 
-  // If selected package doesn't match category, update it
   React.useEffect(() => {
     const matching = DJ_PACKAGES.find(p => p.category === selectedType);
     if (matching) {
@@ -40,10 +39,8 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
     );
   };
 
-  // Sound scaling adjustment for very large venues / guests
   const soundScaleFee = guestTier === 'extra' ? 250 : guestTier === 'large' ? 120 : 0;
 
-  // Add-ons total
   const addOnsTotal = selectedAddOnIds.reduce((sum, id) => {
     const item = PACKAGE_ADD_ONS.find(a => a.id === id);
     return sum + (item ? item.price : 0);
@@ -57,7 +54,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-amber-400 uppercase mb-2">
+          <div className="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-purple-400 uppercase mb-2">
             <Calculator className="w-3.5 h-3.5" />
             <span>Transparent Pricing in NZD</span>
           </div>
@@ -86,7 +83,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                   onClick={() => setSelectedType('wedding')}
                   className={`py-3 px-3 text-xs sm:text-sm font-semibold rounded-lg border transition-all text-center ${
                     selectedType === 'wedding'
-                      ? 'border-amber-400 bg-amber-400/10 text-amber-300'
+                      ? 'border-purple-500 bg-purple-950/70 text-purple-300 shadow-sm'
                       : 'border-stone-800 bg-stone-900/50 text-stone-400 hover:border-stone-700 hover:text-stone-200'
                   }`}
                 >
@@ -97,7 +94,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                   onClick={() => setSelectedType('corporate')}
                   className={`py-3 px-3 text-xs sm:text-sm font-semibold rounded-lg border transition-all text-center ${
                     selectedType === 'corporate'
-                      ? 'border-amber-400 bg-amber-400/10 text-amber-300'
+                      ? 'border-purple-500 bg-purple-950/70 text-purple-300 shadow-sm'
                       : 'border-stone-800 bg-stone-900/50 text-stone-400 hover:border-stone-700 hover:text-stone-200'
                   }`}
                 >
@@ -108,7 +105,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                   onClick={() => setSelectedType('private_party')}
                   className={`py-3 px-3 text-xs sm:text-sm font-semibold rounded-lg border transition-all text-center ${
                     selectedType === 'private_party'
-                      ? 'border-amber-400 bg-amber-400/10 text-amber-300'
+                      ? 'border-purple-500 bg-purple-950/70 text-purple-300 shadow-sm'
                       : 'border-stone-800 bg-stone-900/50 text-stone-400 hover:border-stone-700 hover:text-stone-200'
                   }`}
                 >
@@ -129,7 +126,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                     onClick={() => setSelectedPackageId(pkg.id)}
                     className={`p-4 rounded-xl border cursor-pointer transition-all ${
                       selectedPackageId === pkg.id
-                        ? 'border-amber-400/90 bg-stone-900 shadow-md ring-1 ring-amber-400/50'
+                        ? 'border-purple-500 bg-stone-900 shadow-md ring-1 ring-purple-500/50'
                         : 'border-stone-800 bg-stone-900/30 hover:border-stone-700'
                     }`}
                   >
@@ -138,7 +135,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-white text-base">{pkg.name}</span>
                           {pkg.featured && (
-                            <span className="text-[11px] font-semibold text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded">
+                            <span className="text-[11px] font-semibold text-purple-300 bg-purple-950/80 border border-purple-500/40 px-2 py-0.5 rounded">
                               Most Popular
                             </span>
                           )}
@@ -149,7 +146,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <div className="text-lg sm:text-xl font-bold text-amber-400 tabular-nums">
+                        <div className="text-lg sm:text-xl font-bold text-purple-400 tabular-nums">
                           ${pkg.priceFrom.toLocaleString()} <span className="text-xs text-stone-400 font-normal">NZD</span>
                         </div>
                         <div className="text-[11px] text-stone-500">Base rate</div>
@@ -160,7 +157,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
               </div>
             </div>
 
-            {/* 3. Expected Guest Size & Room Scale */}
+            {/* 3. Expected Guest Size */}
             <div className="bg-stone-950/80 border border-stone-800 rounded-xl p-6">
               <div className="flex items-center justify-between mb-3">
                 <label htmlFor={guestSizeId} className="text-xs font-semibold uppercase tracking-wider text-stone-400">
@@ -186,7 +183,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                     onClick={() => setGuestTier(tier.id)}
                     className={`p-2.5 rounded-lg border text-center transition-all ${
                       guestTier === tier.id
-                        ? 'border-amber-400 bg-amber-400/10 text-white font-bold'
+                        ? 'border-purple-500 bg-purple-950/70 text-white font-bold shadow-sm'
                         : 'border-stone-800 bg-stone-900/50 text-stone-400 hover:border-stone-700'
                     }`}
                   >
@@ -211,19 +208,19 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                       onClick={() => toggleAddOn(addon.id)}
                       className={`p-3 rounded-lg border cursor-pointer transition-all flex items-start gap-3 ${
                         isChecked
-                          ? 'border-amber-400/80 bg-stone-900/90 text-white'
+                          ? 'border-purple-500 bg-stone-900/90 text-white'
                           : 'border-stone-800 bg-stone-900/30 text-stone-400 hover:border-stone-700'
                       }`}
                     >
                       <div className={`w-4 h-4 rounded mt-0.5 flex items-center justify-center shrink-0 border ${
-                        isChecked ? 'bg-amber-400 border-amber-400 text-stone-950' : 'border-stone-700 bg-stone-900'
+                        isChecked ? 'bg-purple-600 border-purple-500 text-white' : 'border-stone-700 bg-stone-900'
                       }`}>
                         {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-semibold text-stone-200 truncate">{addon.name}</span>
-                          <span className="text-xs font-bold text-amber-400 shrink-0 ml-2 tabular-nums">
+                          <span className="text-xs font-bold text-purple-400 shrink-0 ml-2 tabular-nums">
                             +${addon.price}
                           </span>
                         </div>
@@ -241,12 +238,12 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
 
           {/* Live Quote Summary (Right 5 Cols - Sticky) */}
           <div className="lg:col-span-5 sticky top-28">
-            <div className="bg-stone-950 border border-amber-400/30 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-48 h-48 bg-amber-400/5 blur-3xl pointer-events-none rounded-full" />
+            <div className="bg-stone-950 border border-purple-500/40 rounded-2xl p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-purple-600/15 blur-3xl pointer-events-none rounded-full" />
               
               <div className="flex items-center justify-between pb-4 border-b border-stone-800">
                 <div>
-                  <span className="text-xs font-bold text-amber-400 uppercase tracking-wider">Estimated Quote</span>
+                  <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">Estimated Quote</span>
                   <h3 className="text-lg font-bold text-white mt-0.5">{currentPackage.name}</h3>
                 </div>
                 <div className="text-right">
@@ -267,7 +264,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                 {soundScaleFee > 0 && (
                   <div className="flex items-center justify-between text-stone-300">
                     <span>Acoustic Room Scaling ({guestTier === 'extra' ? '250+' : '150-250'} guests):</span>
-                    <span className="font-semibold text-amber-400 tabular-nums">+${soundScaleFee}</span>
+                    <span className="font-semibold text-purple-400 tabular-nums">+${soundScaleFee}</span>
                   </div>
                 )}
 
@@ -277,7 +274,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                   return (
                     <div key={id} className="flex items-center justify-between text-stone-300">
                       <span className="truncate pr-2">{item.name}:</span>
-                      <span className="font-semibold text-amber-400 tabular-nums shrink-0">+${item.price}</span>
+                      <span className="font-semibold text-purple-400 tabular-nums shrink-0">+${item.price}</span>
                     </div>
                   );
                 })}
@@ -290,7 +287,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                 </div>
                 {currentPackage.inclusions.slice(0, 4).map((inc, i) => (
                   <div key={i} className="flex items-start gap-2">
-                    <Check className="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" />
+                    <Check className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
                     <span className="leading-tight">{inc}</span>
                   </div>
                 ))}
@@ -299,7 +296,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
               {/* Trust badges */}
               <div className="py-3 bg-stone-900/50 rounded-lg p-3 text-[11px] text-stone-400 space-y-1 mb-6">
                 <div className="flex items-center gap-1.5 text-stone-300 font-medium">
-                  <Shield className="w-3.5 h-3.5 text-amber-400" />
+                  <Shield className="w-3.5 h-3.5 text-purple-400" />
                   <span>No surprise invoices or Auckland travel charges</span>
                 </div>
                 <div className="text-stone-500 pl-5">
@@ -311,7 +308,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
               <button
                 type="button"
                 onClick={() => onApplyPackageToInquiry(selectedPackageId, selectedAddOnIds, totalEstimate)}
-                className="w-full py-4 px-6 text-sm font-bold text-stone-950 bg-amber-400 hover:bg-amber-300 rounded-xl transition-all duration-150 flex items-center justify-center gap-2 shadow-lg shadow-amber-400/10 active:scale-[0.98]"
+                className="w-full py-4 px-6 text-sm font-bold text-white bg-purple-600 hover:bg-purple-500 rounded-xl transition-all duration-150 flex items-center justify-center gap-2 shadow-lg shadow-purple-600/35 active:scale-[0.98]"
               >
                 <span>Lock In This Quote & Check Date</span>
                 <ArrowRight className="w-4 h-4" />

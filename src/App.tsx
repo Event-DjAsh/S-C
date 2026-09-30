@@ -15,11 +15,9 @@ import { ReviewsSection } from './components/ReviewsSection';
 import { InquiryForm } from './components/InquiryForm';
 import { FaqSection } from './components/FaqSection';
 import { Footer } from './components/Footer';
-import { GitHubPagesModal } from './components/GitHubPagesModal';
 import { EventType } from './types';
 
 export default function App() {
-  const [githubGuideOpen, setGithubGuideOpen] = useState(false);
   const [inquiryPackageId, setInquiryPackageId] = useState('wedding-full-day');
   const [inquiryAddOns, setInquiryAddOns] = useState<string[]>([]);
   const [inquiryEstimate, setInquiryEstimate] = useState(2150);
@@ -38,17 +36,15 @@ export default function App() {
     scrollToSection('inquiry');
   };
 
-  const handleSelectServiceForQuote = (serviceType: EventType) => {
-    // Scroll to pricing and set type if needed
+  const handleSelectServiceForQuote = (_serviceType: EventType) => {
     scrollToSection('pricing');
   };
 
   return (
-    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-amber-400 selection:text-stone-950">
+    <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-fuchsia-500 selection:text-white">
       
-      {/* 1-Row 3-Zone Fixed Navigation */}
+      {/* 1-Row 3-Zone Fixed Navigation with Top-Left Logo */}
       <Navbar 
-        onOpenGithubGuide={() => setGithubGuideOpen(true)}
         onOpenBooking={() => scrollToSection('inquiry')}
       />
 
@@ -74,7 +70,7 @@ export default function App() {
         {/* Interactive Music Vibe Player with Web Audio API beat preview */}
         <MusicVibePlayer />
 
-        {/* Auckland Venues & Acoustic Guide (Local SEO powerhouse) */}
+        {/* Auckland Venues & Acoustic Guide */}
         <AucklandVenues />
 
         {/* Pro Audio & Hardware Redundancy Showcase */}
@@ -94,16 +90,8 @@ export default function App() {
         <FaqSection />
       </main>
 
-      {/* Quiet Footer */}
-      <Footer 
-        onOpenGithubGuide={() => setGithubGuideOpen(true)}
-      />
-
-      {/* GitHub Pages & Custom Domain Setup Modal */}
-      <GitHubPagesModal 
-        isOpen={githubGuideOpen}
-        onClose={() => setGithubGuideOpen(false)}
-      />
+      {/* Clean Footer with Brand Logo */}
+      <Footer />
 
     </div>
   );
