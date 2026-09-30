@@ -1,8 +1,10 @@
 import React from 'react';
 import { Star, Award } from 'lucide-react';
-import { TESTIMONIALS } from '../data/djData';
+import { useSiteContent } from '../context/SiteContentContext';
 
 export const ReviewsSection: React.FC = () => {
+  const { content } = useSiteContent();
+  const { testimonials, hero } = content;
   return (
     <section id="reviews" className="py-20 lg:py-28 bg-stone-900/60 border-b border-stone-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -33,7 +35,7 @@ export const ReviewsSection: React.FC = () => {
             </div>
             <div className="h-10 w-px bg-stone-800" />
             <div className="text-xs text-stone-300">
-              <div className="font-semibold text-white">54 Verified Reviews</div>
+              <div className="font-semibold text-white">{hero.reviewsCount} Verified Reviews</div>
               <div className="text-stone-400 text-[11px]">100% 5-Star Track Record</div>
             </div>
           </div>
@@ -41,7 +43,7 @@ export const ReviewsSection: React.FC = () => {
 
         {/* Testimonials Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {TESTIMONIALS.map(t => (
+          {testimonials.map(t => (
             <div 
               key={t.id}
               className="bg-stone-950 border border-stone-800/80 rounded-2xl p-6 sm:p-8 flex flex-col justify-between hover:border-purple-500/50 transition-colors relative"

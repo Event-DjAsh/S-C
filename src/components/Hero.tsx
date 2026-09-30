@@ -1,6 +1,7 @@
 import React from 'react';
-import { ArrowRight, Volume2, Sparkles, MapPin, Award } from 'lucide-react';
+import { ArrowRight, Images, Sparkles, MapPin, Award } from 'lucide-react';
 import heroImage from '../assets/images/hero_dj_wedding_1790753841000.jpg';
+import { useSiteContent } from '../context/SiteContentContext';
 
 interface HeroProps {
   onQuoteClick: () => void;
@@ -8,6 +9,9 @@ interface HeroProps {
 }
 
 export const Hero: React.FC<HeroProps> = ({ onQuoteClick, onListenClick }) => {
+  const { content } = useSiteContent();
+  const { hero } = content;
+
   return (
     <section className="relative pt-24 pb-16 lg:pt-32 lg:pb-24 overflow-hidden border-b border-stone-800/60">
       {/* Background radial glow in Hot Purple */}
@@ -30,24 +34,24 @@ export const Hero: React.FC<HeroProps> = ({ onQuoteClick, onListenClick }) => {
             <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm font-medium text-purple-400">
               <span className="flex items-center gap-1.5 text-stone-300">
                 <MapPin className="w-3.5 h-3.5 text-purple-400" />
-                Auckland, New Zealand
+                {hero.locationBadges[0] || 'Auckland, New Zealand'}
               </span>
-              <span aria-hidden="true" className="text-stone-600">·</span>
-              <span>Waiheke Island</span>
-              <span aria-hidden="true" className="text-stone-600">·</span>
-              <span>Kumeu Wine Country</span>
-              <span aria-hidden="true" className="text-stone-600">·</span>
-              <span>Matakana Coast</span>
+              {hero.locationBadges.slice(1).map((loc, idx) => (
+                <React.Fragment key={idx}>
+                  <span aria-hidden="true" className="text-stone-600">·</span>
+                  <span>{loc}</span>
+                </React.Fragment>
+              ))}
             </div>
 
             {/* Unmistakable H1 headline */}
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.08] font-display text-balance">
-              Auckland Wedding & Corporate Event DJ Hire.
+              {hero.headline}
             </h1>
 
             {/* Subtitle / Value Proposition */}
             <p className="text-lg sm:text-xl text-stone-300 max-w-2xl leading-relaxed">
-              We design unforgettable celebrations with concert-grade sound, bespoke music curation, and seamless crowd reading. No cheesy microphone gimmicks—just packed dancefloors from first drink to the final song.
+              {hero.subtitle}
             </p>
 
             {/* Action buttons in Hot Purple & Dark Contrast */}
@@ -64,23 +68,29 @@ export const Hero: React.FC<HeroProps> = ({ onQuoteClick, onListenClick }) => {
                 onClick={onListenClick}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold text-stone-200 bg-stone-900/90 hover:bg-stone-800 border border-stone-700/80 hover:border-purple-500/60 rounded-lg transition-colors whitespace-nowrap"
               >
-                <Volume2 className="w-4 h-4 text-purple-400" />
-                <span>Listen to Sample Mixes</span>
+                <Images className="w-4 h-4 text-purple-400" />
+                <span>View Event Gallery</span>
               </button>
             </div>
 
             {/* Adjacency Trust Metrics */}
             <div className="pt-6 border-t border-stone-800/80 grid grid-cols-3 gap-4 text-left">
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-white font-display tabular-nums">54+</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white font-display tabular-nums">
+                  {hero.reviewsCount}
+                </div>
                 <div className="text-xs text-stone-400 font-medium">5-Star Auckland Reviews</div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-white font-display tabular-nums">100%</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white font-display tabular-nums">
+                  {hero.complianceRate}
+                </div>
                 <div className="text-xs text-stone-400 font-medium">Sound Limit Compliance</div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-white font-display tabular-nums">$10M</div>
+                <div className="text-2xl sm:text-3xl font-bold text-white font-display tabular-nums">
+                  {hero.insuranceAmount}
+                </div>
                 <div className="text-xs text-stone-400 font-medium">Public Liability Cover</div>
               </div>
             </div>
@@ -104,10 +114,10 @@ export const Hero: React.FC<HeroProps> = ({ onQuoteClick, onListenClick }) => {
                 <div>
                   <div className="font-semibold text-stone-100 flex items-center gap-1.5">
                     <Award className="w-4 h-4 text-purple-400 shrink-0" />
-                    <span>Mudbrick Vineyard, Waiheke</span>
+                    <span>{hero.showcaseVenue}</span>
                   </div>
                   <div className="text-stone-400 text-[11px] mt-0.5">
-                    Full-Day Wedding Audio & Late-Night Set
+                    {hero.showcaseNote}
                   </div>
                 </div>
                 <span className="text-[11px] text-purple-300 font-semibold bg-purple-950/80 border border-purple-500/40 px-2 py-1 rounded">

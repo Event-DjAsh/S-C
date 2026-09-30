@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { ChevronDown, HelpCircle } from 'lucide-react';
-import { FREQUENTLY_ASKED_QUESTIONS } from '../data/djData';
+import { useSiteContent } from '../context/SiteContentContext';
 
 export const FaqSection: React.FC = () => {
+  const { content } = useSiteContent();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   const toggle = (idx: number) => {
@@ -27,7 +28,7 @@ export const FaqSection: React.FC = () => {
         </div>
 
         <div className="space-y-3">
-          {FREQUENTLY_ASKED_QUESTIONS.map((faq, idx) => {
+          {content.faqs.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
               <div

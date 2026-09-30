@@ -1,8 +1,16 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Facebook, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Instagram, Facebook, ShieldCheck, Sliders } from 'lucide-react';
 import logoImg from '../assets/images/logo_hot_purple_1790761643176.jpg';
+import { useSiteContent } from '../context/SiteContentContext';
 
-export const Footer: React.FC = () => {
+interface FooterProps {
+  onOpenEditor?: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onOpenEditor }) => {
+  const { content } = useSiteContent();
+  const { general } = content;
+
   return (
     <footer className="bg-stone-950 text-stone-400 border-t border-stone-800 text-xs">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -15,13 +23,13 @@ export const Footer: React.FC = () => {
               <div className="w-9 h-9 rounded-xl overflow-hidden border border-purple-500/60 shadow-md shadow-purple-600/30 bg-black shrink-0">
                 <img 
                   src={logoImg} 
-                  alt="Sound & Celebration Logo" 
+                  alt={`${general.businessName} Logo`} 
                   className="w-full h-full object-cover"
                   referrerPolicy="no-referrer"
                 />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white font-display">
-                Sound & Celebration
+              <span className="text-xl font-extrabold tracking-tight text-white font-display">
+                {general.businessName}
               </span>
             </div>
             
@@ -30,7 +38,7 @@ export const Footer: React.FC = () => {
             </p>
             <div className="flex items-center gap-4 text-stone-400 pt-2">
               <a 
-                href="https://instagram.com" 
+                href={general.instagramUrl || "https://instagram.com"} 
                 target="_blank" 
                 rel="noreferrer"
                 className="hover:text-purple-400 transition-colors p-1"
@@ -39,7 +47,7 @@ export const Footer: React.FC = () => {
                 <Instagram className="w-4 h-4" />
               </a>
               <a 
-                href="https://facebook.com" 
+                href={general.facebookUrl || "https://facebook.com"} 
                 target="_blank" 
                 rel="noreferrer"
                 className="hover:text-purple-400 transition-colors p-1"
@@ -58,8 +66,7 @@ export const Footer: React.FC = () => {
             <ul className="space-y-2">
               <li><a href="#services" className="hover:text-purple-400 transition-colors">DJ Services</a></li>
               <li><a href="#pricing" className="hover:text-purple-400 transition-colors">Packages & Pricing</a></li>
-              <li><a href="#venues" className="hover:text-purple-400 transition-colors">Auckland Venues</a></li>
-              <li><a href="#music-sets" className="hover:text-purple-400 transition-colors">Music Vibes</a></li>
+              <li><a href="#gallery" className="hover:text-purple-400 transition-colors">Gallery of Previous Events</a></li>
               <li><a href="#reviews" className="hover:text-purple-400 transition-colors">Client Testimonials</a></li>
               <li><a href="#faq" className="hover:text-purple-400 transition-colors">FAQ</a></li>
             </ul>
@@ -88,24 +95,24 @@ export const Footer: React.FC = () => {
             <div className="space-y-2 text-stone-400">
               <div className="flex items-center gap-2">
                 <MapPin className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                <span>Auckland, New Zealand</span>
+                <span>{general.address}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                <a href="tel:+6421892411" className="hover:text-white transition-colors">
-                  +64 21 892 411
+                <a href={`tel:${general.phone.replace(/\s+/g, '')}`} className="hover:text-white transition-colors">
+                  {general.phone}
                 </a>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-3.5 h-3.5 text-purple-400 shrink-0" />
-                <a href="mailto:hello@soundandcelebration.co.nz" className="hover:text-white transition-colors">
-                  hello@soundandcelebration.co.nz
+                <a href={`mailto:${general.email}`} className="hover:text-white transition-colors">
+                  {general.email}
                 </a>
               </div>
               <div className="pt-2">
                 <span className="inline-flex items-center gap-1.5 text-stone-400 text-[11px]">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                  $10M NZD Public Liability
+                  {general.liabilityInsurance}
                 </span>
               </div>
             </div>
@@ -113,17 +120,26 @@ export const Footer: React.FC = () => {
 
         </div>
 
-        {/* Bottom Bar: Copyright */}
+        {/* Bottom Bar: Copyright & Admin Editor Link */}
         <div className="pt-8 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
           <div>
-            &copy; {new Date().getFullYear()} Sound & Celebration (soundandcelebration.co.nz). All rights reserved.
+            &copy; {new Date().getFullYear()} {general.businessName} (soundandcelebration.co.nz). All rights reserved.
           </div>
+          
           <div className="flex items-center gap-4">
+            {onOpenEditor && (
+              <button
+                onClick={onOpenEditor}
+                className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 font-semibold"
+              >
+                <Sliders className="w-3.5 h-3.5" />
+                <span>Edit Website Content / Admin</span>
+              </button>
+            )}
+            <span aria-hidden="true" className="text-stone-700">·</span>
             <span>Auckland Wedding DJ</span>
             <span aria-hidden="true">·</span>
             <span>Corporate Event Audio</span>
-            <span aria-hidden="true">·</span>
-            <span>Private Party Entertainment</span>
           </div>
         </div>
 

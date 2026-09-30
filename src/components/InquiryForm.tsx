@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Calendar, MapPin, Mail, Phone, User, CheckCircle2, Send, AlertCircle } from 'lucide-react';
-import { DJ_PACKAGES, AUCKLAND_VENUES } from '../data/djData';
+import { AUCKLAND_VENUES } from '../data/djData';
 import { EventType } from '../types';
+import { useSiteContent } from '../context/SiteContentContext';
 
 interface InquiryFormProps {
   initialPackageId?: string;
@@ -14,6 +15,9 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
   initialAddOnIds = [],
   initialEstimate = 2150
 }) => {
+  const { content, addInquiry } = useSiteContent();
+  const { packages } = content;
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -35,10 +39,10 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
       setFormData(prev => ({
         ...prev,
         packageId: initialPackageId,
-        eventType: DJ_PACKAGES.find(p => p.id === initialPackageId)?.category || prev.eventType
+        eventType: packages.find(p => p.id === initialPackageId)?.category || prev.eventType
       }));
     }
-  }, [initialPackageId]);
+  }, [initialPackageId, packages]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -60,12 +64,24 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
 
     setIsSubmitting(true);
     setTimeout(() => {
+      // Save lead into in-app Admin Inbox
+      addInquiry({
+        fullName: formData.fullName,
+        email: formData.email,
+        phone: formData.phone,
+        eventDate: formData.eventDate,
+        eventType: formData.eventType,
+        venue: formData.venue,
+        guestCount: formData.guestCount,
+        packageId: formData.packageId,
+        notes: formData.notes
+      });
       setIsSubmitting(false);
       setSubmitted(true);
     }, 750);
   };
 
-  const selectedPkg = DJ_PACKAGES.find(p => p.id === formData.packageId) || DJ_PACKAGES[0];
+  const selectedPkg = packages.find(p => p.id === formData.packageId) || packages[0];
 
   return (
     <section id="inquiry" className="py-20 lg:py-28 bg-stone-950 border-b border-stone-800">
@@ -279,7 +295,7 @@ export const InquiryForm: React.FC<InquiryFormProps> = ({
                   onChange={handleChange}
                   className="w-full bg-stone-950 border border-stone-800 rounded-lg px-4 py-3 text-sm text-white focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition-colors"
                 >
-                  {DJ_PACKAGES.map(p => (
+                  {packages.map(p => (
                     <option key={p.id} value={p.id}>
                       {p.name} ({p.hoursIncluded} hrs · ${p.priceFrom} NZD)
                     </option>

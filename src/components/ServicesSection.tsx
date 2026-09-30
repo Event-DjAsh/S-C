@@ -3,6 +3,7 @@ import { Check, ArrowUpRight } from 'lucide-react';
 import weddingImg from '../assets/images/service_wedding_dj_1790753867187.jpg';
 import corporateImg from '../assets/images/service_corporate_dj_1790753853648.jpg';
 import partyImg from '../assets/images/service_party_dj_1790753880384.jpg';
+import { useSiteContent } from '../context/SiteContentContext';
 
 interface ServicesSectionProps {
   onSelectServiceForQuote: (serviceType: 'wedding' | 'corporate' | 'private_party') => void;
@@ -10,6 +11,11 @@ interface ServicesSectionProps {
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServiceForQuote }) => {
   const [activeTab, setActiveTab] = useState<'wedding' | 'corporate' | 'party'>('wedding');
+  const { content } = useSiteContent();
+
+  const weddingSvc = content.services.find(s => s.id === 'wedding') || content.services[0];
+  const corporateSvc = content.services.find(s => s.id === 'corporate') || content.services[1];
+  const partySvc = content.services.find(s => s.id === 'party') || content.services[2];
 
   return (
     <section id="services" className="py-20 lg:py-28 bg-stone-950 border-b border-stone-800/80">
@@ -67,36 +73,24 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-stone-900/40 border border-stone-800/80 rounded-2xl p-6 sm:p-8 lg:p-10">
             <div className="lg:col-span-6 space-y-6">
               <div className="text-xs text-stone-400 font-medium tracking-wide">
-                <span>01. WEDDING CELEBRATIONS</span>
-                <span className="mx-2">·</span>
-                <span className="text-purple-400 font-semibold">CEREMONY TO LAST DANCE</span>
+                <span>{weddingSvc.categoryTag}</span>
               </div>
 
               <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
-                Sophisticated Auckland Wedding DJ & Master of Ceremonies
+                {weddingSvc.title}
               </h3>
 
               <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-                Your wedding soundtrack should be as distinct as your relationship. We replace generic wedding playlists with a seamless musical journey: romantic acoustic textures as guests arrive, wireless microphone clarity for your vows, chilled sunset vibes during cocktails, and high-energy bangers that pack the dancefloor until midnight.
+                {weddingSvc.description}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-stone-200">
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Battery outdoor ceremony PA (no noisy generators)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Discreet skin-tone lapel mics for celebrant & vows</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Full MC service available for smooth timeline flow</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Custom First Dance edits & low-fog cloud effects</span>
-                </div>
+                {weddingSvc.inclusions.map((inc, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                    <span>{inc}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="pt-4 flex flex-wrap items-center gap-4">
@@ -108,7 +102,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
                   <ArrowUpRight className="w-4 h-4" />
                 </button>
                 <div className="text-xs text-stone-400">
-                  Packages from <strong className="text-white text-sm font-bold tabular-nums">$1,450 NZD</strong>
+                  Packages from <strong className="text-white text-sm font-bold tabular-nums">${weddingSvc.priceFrom.toLocaleString()} NZD</strong>
                 </div>
               </div>
             </div>
@@ -135,36 +129,24 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-stone-900/40 border border-stone-800/80 rounded-2xl p-6 sm:p-8 lg:p-10">
             <div className="lg:col-span-6 space-y-6">
               <div className="text-xs text-stone-400 font-medium tracking-wide">
-                <span>02. CORPORATE PRODUCTIONS</span>
-                <span className="mx-2">·</span>
-                <span className="text-purple-400 font-semibold">GALAS, AWARDS & ACTIVATIONS</span>
+                <span>{corporateSvc.categoryTag}</span>
               </div>
 
               <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
-                Polished Corporate Audio, Keynote Support & After-Party DJ
+                {corporateSvc.title}
               </h3>
 
               <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-                Corporate events demand crisp sound and acute attention to pacing. We provide corporate-grade wireless microphones, custom walk-up stingers for award recipients, and sound engineering that ensures every executive keynote is clearly heard across the ballroom.
+                {corporateSvc.description}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-stone-200">
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Up to 4x Shure wireless handheld speech microphones</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Custom award walk-up music stingers matched to cues</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>$10,000,000 Public Liability Insurance for all venues</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Black-tie or business attire dress code adhered to</span>
-                </div>
+                {corporateSvc.inclusions.map((inc, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                    <span>{inc}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="pt-4 flex flex-wrap items-center gap-4">
@@ -176,7 +158,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
                   <ArrowUpRight className="w-4 h-4" />
                 </button>
                 <div className="text-xs text-stone-400">
-                  Packages from <strong className="text-white text-sm font-bold tabular-nums">$1,650 NZD</strong>
+                  Packages from <strong className="text-white text-sm font-bold tabular-nums">${corporateSvc.priceFrom.toLocaleString()} NZD</strong>
                 </div>
               </div>
             </div>
@@ -203,36 +185,24 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center bg-stone-900/40 border border-stone-800/80 rounded-2xl p-6 sm:p-8 lg:p-10">
             <div className="lg:col-span-6 space-y-6">
               <div className="text-xs text-stone-400 font-medium tracking-wide">
-                <span>03. PRIVATE CELEBRATIONS</span>
-                <span className="mx-2">·</span>
-                <span className="text-purple-400 font-semibold">21ST, 30TH, 40TH & 50TH BIRTHDAYS</span>
+                <span>{partySvc.categoryTag}</span>
               </div>
 
               <h3 className="text-2xl sm:text-3xl font-bold text-white font-display">
-                Uncompromising Dancefloors for Milestone Birthdays & Bashes
+                {partySvc.title}
               </h3>
 
               <p className="text-stone-300 text-sm sm:text-base leading-relaxed">
-                No filler tracks, no dead air. We bring club-grade sound and festival-quality lighting to private residences, event spaces, rooftop bars, and community halls across Auckland. We mix live, blend throwbacks with current hits, and read the crowd with razor-sharp instinct.
+                {partySvc.description}
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs sm:text-sm text-stone-200">
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>High-output low-frequency subwoofers for punchy club bass</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Computer-synchronized laser and prism dancefloor lighting</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Spotify playlist collaboration & song requests welcomed</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
-                  <span>Cordless mic included for birthday speeches & toasts</span>
-                </div>
+                {partySvc.inclusions.map((inc, i) => (
+                  <div key={i} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
+                    <span>{inc}</span>
+                  </div>
+                ))}
               </div>
 
               <div className="pt-4 flex flex-wrap items-center gap-4">
@@ -244,7 +214,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
                   <ArrowUpRight className="w-4 h-4" />
                 </button>
                 <div className="text-xs text-stone-400">
-                  Packages from <strong className="text-white text-sm font-bold tabular-nums">$980 NZD</strong>
+                  Packages from <strong className="text-white text-sm font-bold tabular-nums">${partySvc.priceFrom.toLocaleString()} NZD</strong>
                 </div>
               </div>
             </div>

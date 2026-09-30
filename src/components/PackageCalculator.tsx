@@ -1,7 +1,7 @@
 import React, { useState, useId } from 'react';
 import { Check, Calculator, Shield, ArrowRight } from 'lucide-react';
-import { DJ_PACKAGES, PACKAGE_ADD_ONS } from '../data/djData';
 import { EventType } from '../types';
+import { useSiteContent } from '../context/SiteContentContext';
 
 interface PackageCalculatorProps {
   initialEventType?: EventType;
@@ -12,12 +12,15 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
   initialEventType = 'wedding',
   onApplyPackageToInquiry
 }) => {
+  const { content } = useSiteContent();
+  const { packages, addOns, general } = content;
+
   const [selectedType, setSelectedType] = useState<EventType>(initialEventType);
   
   // Find packages matching category
-  const categoryPackages = DJ_PACKAGES.filter(p => p.category === selectedType);
+  const categoryPackages = packages.filter(p => p.category === selectedType);
   const [selectedPackageId, setSelectedPackageId] = useState<string>(
-    categoryPackages[0]?.id || DJ_PACKAGES[0].id
+    categoryPackages[0]?.id || packages[0]?.id || ''
   );
 
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
@@ -25,13 +28,22 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
   const guestSizeId = useId();
 
   React.useEffect(() => {
-    const matching = DJ_PACKAGES.find(p => p.category === selectedType);
+    const matching = packages.find(p => p.category === selectedType);
     if (matching) {
       setSelectedPackageId(matching.id);
     }
-  }, [selectedType]);
+  }, [selectedType, packages]);
 
-  const currentPackage = DJ_PACKAGES.find(p => p.id === selectedPackageId) || DJ_PACKAGES[0];
+  const currentPackage = packages.find(p => p.id === selectedPackageId) || packages[0] || {
+    id: 'custom',
+    name: 'Custom Package',
+    category: 'wedding',
+    subtitle: 'Tailored event entertainment',
+    priceFrom: 1200,
+    hoursIncluded: 5,
+    idealFor: 'Custom requirements',
+    inclusions: ['Professional DJ Performance', 'Concert Sound System']
+  };
 
   const toggleAddOn = (id: string) => {
     setSelectedAddOnIds(prev => 
@@ -42,11 +54,11 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
   const soundScaleFee = guestTier === 'extra' ? 250 : guestTier === 'large' ? 120 : 0;
 
   const addOnsTotal = selectedAddOnIds.reduce((sum, id) => {
-    const item = PACKAGE_ADD_ONS.find(a => a.id === id);
+    const item = addOns.find(a => a.id === id);
     return sum + (item ? item.price : 0);
   }, 0);
 
-  const totalEstimate = currentPackage.priceFrom + addOnsTotal + soundScaleFee;
+  const totalEstimate = (currentPackage?.priceFrom || 0) + addOnsTotal + soundScaleFee;
 
   return (
     <section id="pricing" className="py-20 lg:py-28 bg-stone-900/60 border-b border-stone-800">
@@ -120,7 +132,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                 2. Choose Base Package
               </label>
               <div className="space-y-3">
-                {DJ_PACKAGES.filter(p => p.category === selectedType).map(pkg => (
+                {packages.filter(p => p.category === selectedType).map(pkg => (
                   <div
                     key={pkg.id}
                     onClick={() => setSelectedPackageId(pkg.id)}
@@ -161,7 +173,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
             <div className="bg-stone-950/80 border border-stone-800 rounded-xl p-6">
               <div className="flex items-center justify-between mb-3">
                 <label htmlFor={guestSizeId} className="text-xs font-semibold uppercase tracking-wider text-stone-400">
-                  3. Guest Attendance (Acoustic & Subwoofer Calibration)
+                  3. Guest Attendance (Acoustic Calibration)
                 </label>
                 <span className="text-xs text-stone-400">
                   {guestTier === 'small' && 'Up to 80 Guests (Compact Setup)'}
@@ -200,7 +212,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                 4. Select Optional Enhancements
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {PACKAGE_ADD_ONS.map(addon => {
+                {addOns.map(addon => {
                   const isChecked = selectedAddOnIds.includes(addon.id);
                   return (
                     <div
@@ -263,13 +275,13 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
 
                 {soundScaleFee > 0 && (
                   <div className="flex items-center justify-between text-stone-300">
-                    <span>Acoustic Room Scaling ({guestTier === 'extra' ? '250+' : '150-250'} guests):</span>
+                    <span>Acoustic Scaling ({guestTier === 'extra' ? '250+' : '150-250'} guests):</span>
                     <span className="font-semibold text-purple-400 tabular-nums">+${soundScaleFee}</span>
                   </div>
                 )}
 
                 {selectedAddOnIds.map(id => {
-                  const item = PACKAGE_ADD_ONS.find(a => a.id === id);
+                  const item = addOns.find(a => a.id === id);
                   if (!item) return null;
                   return (
                     <div key={id} className="flex items-center justify-between text-stone-300">
@@ -300,7 +312,7 @@ export const PackageCalculator: React.FC<PackageCalculatorProps> = ({
                   <span>No surprise invoices or Auckland travel charges</span>
                 </div>
                 <div className="text-stone-500 pl-5">
-                  Deposit is only 25% to secure your date. Backup audio hardware always included.
+                  Deposit is only {general.depositPercentage}% to secure your date. Backup audio hardware always included.
                 </div>
               </div>
 
