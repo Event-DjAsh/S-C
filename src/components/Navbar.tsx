@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Menu, X, CalendarCheck, Sliders } from 'lucide-react';
+import { Menu, X, CalendarCheck } from 'lucide-react';
 import logoImg from '../assets/images/logo_hot_purple_1790761643176.jpg';
 import { useSiteContent } from '../context/SiteContentContext';
 
 interface NavbarProps {
   onOpenBooking: () => void;
-  onOpenEditor?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenEditor }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { content } = useSiteContent();
 
@@ -43,19 +42,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenEditor }) =
           <a href="#faq" className="hover:text-purple-400 transition-colors">FAQ</a>
         </nav>
 
-        {/* Zone 3: Primary action buttons */}
-        <div className="flex items-center gap-2.5">
-          {onOpenEditor && (
-            <button
-              onClick={onOpenEditor}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold text-purple-300 bg-purple-950/60 hover:bg-purple-900/60 border border-purple-500/40 rounded-lg transition-colors"
-              title="Open Website Content Editor"
-            >
-              <Sliders className="w-3.5 h-3.5 text-purple-400" />
-              <span>Update Site</span>
-            </button>
-          )}
-
+        {/* Zone 3: Primary action button */}
+        <div className="flex items-center gap-3">
           <button
             onClick={onOpenBooking}
             className="inline-flex items-center gap-2 px-4 sm:px-5 py-2.5 text-xs sm:text-sm font-semibold text-white bg-purple-600 hover:bg-purple-500 rounded-lg transition-all shadow-md shadow-purple-600/35 active:scale-[0.98] whitespace-nowrap"
@@ -116,7 +104,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenEditor }) =
             </a>
           </div>
 
-          <div className="pt-2 space-y-2">
+          <div className="pt-2">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -126,19 +114,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenEditor }) =
             >
               Check Availability & Instant Quote
             </button>
-
-            {onOpenEditor && (
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  onOpenEditor();
-                }}
-                className="w-full py-2.5 px-4 text-xs font-semibold text-purple-300 bg-purple-950/60 border border-purple-500/40 rounded-lg text-center flex items-center justify-center gap-1.5"
-              >
-                <Sliders className="w-3.5 h-3.5" />
-                <span>Open Website Content Studio</span>
-              </button>
-            )}
           </div>
         </div>
       )}

@@ -71,6 +71,10 @@ export interface LeadInquiry {
   status: 'new' | 'contacted' | 'booked';
 }
 
+export interface SecuritySettings {
+  adminPassword: string;
+}
+
 export interface SiteContentState {
   general: GeneralInfo;
   hero: HeroInfo;
@@ -81,6 +85,7 @@ export interface SiteContentState {
   testimonials: Testimonial[];
   faqs: { question: string; answer: string }[];
   inquiries: LeadInquiry[];
+  security: SecuritySettings;
 }
 
 const STORAGE_KEY = 'sound_celebration_site_content_v2';
@@ -236,7 +241,10 @@ const DEFAULT_STATE: SiteContentState = {
   gallery: DEFAULT_GALLERY,
   testimonials: TESTIMONIALS,
   faqs: FREQUENTLY_ASKED_QUESTIONS,
-  inquiries: []
+  inquiries: [],
+  security: {
+    adminPassword: 'AucklandDJ2026!'
+  }
 };
 
 interface SiteContentContextValue {
@@ -262,6 +270,7 @@ interface SiteContentContextValue {
   addInquiry: (inquiry: Omit<LeadInquiry, 'id' | 'submittedAt' | 'status'>) => void;
   updateInquiryStatus: (id: string, status: LeadInquiry['status']) => void;
   deleteInquiry: (id: string) => void;
+  changeAdminPassword: (newPassword: string) => void;
   resetToDefaults: () => void;
   exportBackupJson: () => string;
   importBackupJson: (jsonStr: string) => boolean;
@@ -286,7 +295,8 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
           gallery: parsed.gallery?.length ? parsed.gallery : DEFAULT_GALLERY,
           testimonials: parsed.testimonials?.length ? parsed.testimonials : TESTIMONIALS,
           faqs: parsed.faqs?.length ? parsed.faqs : FREQUENTLY_ASKED_QUESTIONS,
-          inquiries: parsed.inquiries || []
+          inquiries: parsed.inquiries || [],
+          security: { ...DEFAULT_STATE.security, ...(parsed.security || {}) }
         };
       }
     } catch (e) {
@@ -422,6 +432,13 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     }));
   };
 
+  const changeAdminPassword = (newPassword: string) => {
+    setContent(prev => ({
+      ...prev,
+      security: { ...prev.security, adminPassword: newPassword }
+    }));
+  };
+
   const resetToDefaults = () => {
     if (window.confirm('Are you sure you want to reset all site content to original defaults? Any custom edits will be reverted.')) {
       setContent(DEFAULT_STATE);
@@ -472,6 +489,7 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
         addInquiry,
         updateInquiryStatus,
         deleteInquiry,
+        changeAdminPassword,
         resetToDefaults,
         exportBackupJson,
         importBackupJson

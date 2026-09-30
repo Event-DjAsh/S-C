@@ -3,8 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { Sliders } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
 import { SiteContentProvider } from './context/SiteContentContext';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
@@ -24,6 +23,44 @@ function AppContent() {
   const [inquiryAddOns, setInquiryAddOns] = useState<string[]>([]);
   const [inquiryEstimate, setInquiryEstimate] = useState(2150);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+
+  // Dedicated URL route detection: #/admin or ?admin
+  useEffect(() => {
+    const checkAdminRoute = () => {
+      const hash = window.location.hash;
+      const search = window.location.search;
+      if (hash === '#/admin' || hash === '#admin' || search.includes('admin=true') || search.includes('admin')) {
+        setIsEditorOpen(true);
+      }
+    };
+
+    checkAdminRoute();
+    window.addEventListener('hashchange', checkAdminRoute);
+    window.addEventListener('popstate', checkAdminRoute);
+
+    // Discrete secret keyboard shortcut: Ctrl+Shift+A or Cmd+Shift+A for site owner
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+        e.preventDefault();
+        setIsEditorOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('hashchange', checkAdminRoute);
+      window.removeEventListener('popstate', checkAdminRoute);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const handleCloseEditor = () => {
+    setIsEditorOpen(false);
+    // Reset URL hash if currently on #/admin
+    if (window.location.hash === '#/admin' || window.location.hash === '#admin') {
+      window.history.pushState(null, '', window.location.pathname + window.location.search);
+    }
+  };
 
   const scrollToSection = (sectionId: string) => {
     const el = document.getElementById(sectionId);
@@ -46,10 +83,9 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-stone-950 text-stone-100 flex flex-col font-sans selection:bg-purple-600 selection:text-white relative">
       
-      {/* 1-Row 3-Zone Fixed Navigation with Top-Left Logo & Site Editor link */}
+      {/* 1-Row 3-Zone Fixed Navigation - 100% clean for customers, no update button */}
       <Navbar 
         onOpenBooking={() => scrollToSection('inquiry')}
-        onOpenEditor={() => setIsEditorOpen(true)}
       />
 
       {/* Main Page Flow */}
@@ -91,32 +127,15 @@ function AppContent() {
         <FaqSection />
       </main>
 
-      {/* Clean Footer with Brand Logo & Admin trigger */}
+      {/* Clean Customer Footer - zero visible admin links */}
       <Footer 
-        onOpenEditor={() => setIsEditorOpen(true)}
+        onAdminTrigger={() => setIsEditorOpen(true)}
       />
 
-      {/* Floating Website Update Action Button */}
-      <aside aria-label="Website Content Studio" className="fixed bottom-5 right-5 z-40">
-        <button
-          onClick={() => setIsEditorOpen(true)}
-          className="group flex items-center gap-2.5 px-4 py-3 bg-stone-900/95 hover:bg-stone-900 border border-purple-500/60 hover:border-purple-400 text-white rounded-full shadow-2xl shadow-purple-950/80 transition-all duration-200 hover:scale-105 active:scale-95"
-          title="Open Website Content Editor"
-        >
-          <div className="w-6 h-6 rounded-full bg-purple-600 flex items-center justify-center text-white shrink-0 group-hover:rotate-45 transition-transform duration-300">
-            <Sliders className="w-3.5 h-3.5" />
-          </div>
-          <div className="flex flex-col text-left">
-            <span className="text-xs font-bold text-white tracking-wide">Update Website</span>
-            <span className="text-[10px] text-purple-300 font-medium">Edit text, prices & gallery</span>
-          </div>
-        </button>
-      </aside>
-
-      {/* Site Content Management Modal */}
+      {/* Secure Password-Protected Administrator Studio Modal (Only open via #/admin or secret trigger) */}
       <SiteEditorModal 
         isOpen={isEditorOpen}
-        onClose={() => setIsEditorOpen(false)}
+        onClose={handleCloseEditor}
       />
 
     </div>

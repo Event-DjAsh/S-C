@@ -1,15 +1,32 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Instagram, Facebook, ShieldCheck, Sliders } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, MapPin, Instagram, Facebook, ShieldCheck } from 'lucide-react';
 import logoImg from '../assets/images/logo_hot_purple_1790761643176.jpg';
 import { useSiteContent } from '../context/SiteContentContext';
 
 interface FooterProps {
-  onOpenEditor?: () => void;
+  onAdminTrigger?: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onOpenEditor }) => {
+export const Footer: React.FC<FooterProps> = ({ onAdminTrigger }) => {
   const { content } = useSiteContent();
   const { general } = content;
+  const [clickCount, setClickCount] = useState(0);
+
+  // Hidden easter-egg: clicking the copyright symbol 3 times opens the admin portal
+  const handleSecretTrigger = () => {
+    const nextCount = clickCount + 1;
+    if (nextCount >= 3) {
+      setClickCount(0);
+      if (onAdminTrigger) {
+        onAdminTrigger();
+      } else {
+        window.location.hash = '/admin';
+      }
+    } else {
+      setClickCount(nextCount);
+      setTimeout(() => setClickCount(0), 1200);
+    }
+  };
 
   return (
     <footer className="bg-stone-950 text-stone-400 border-t border-stone-800 text-xs">
@@ -120,26 +137,25 @@ export const Footer: React.FC<FooterProps> = ({ onOpenEditor }) => {
 
         </div>
 
-        {/* Bottom Bar: Copyright & Admin Editor Link */}
+        {/* Bottom Bar: Copyright (Pure customer facing, clean with zero visible admin buttons) */}
         <div className="pt-8 border-t border-stone-800/80 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-stone-500">
           <div>
-            &copy; {new Date().getFullYear()} {general.businessName} (soundandcelebration.co.nz). All rights reserved.
+            <span 
+              onClick={handleSecretTrigger} 
+              className="cursor-default select-none hover:text-stone-400 transition-colors"
+              title=""
+            >
+              &copy;
+            </span>{' '}
+            {new Date().getFullYear()} {general.businessName} (soundandcelebration.co.nz). All rights reserved.
           </div>
           
           <div className="flex items-center gap-4">
-            {onOpenEditor && (
-              <button
-                onClick={onOpenEditor}
-                className="text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 font-semibold"
-              >
-                <Sliders className="w-3.5 h-3.5" />
-                <span>Edit Website Content / Admin</span>
-              </button>
-            )}
-            <span aria-hidden="true" className="text-stone-700">·</span>
             <span>Auckland Wedding DJ</span>
-            <span aria-hidden="true">·</span>
+            <span aria-hidden="true" className="text-stone-700">·</span>
             <span>Corporate Event Audio</span>
+            <span aria-hidden="true" className="text-stone-700">·</span>
+            <span>Private Party Entertainment</span>
           </div>
         </div>
 
