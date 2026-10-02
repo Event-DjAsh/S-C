@@ -1,8 +1,8 @@
 /**
  * Utility to process, optimize, and resize photos uploaded directly from the laptop.
- * Converts raw camera/phone photos (often 5MB - 20MB) into high-fidelity,
- * web-optimized Data URLs (~120KB - 250KB) so multiple photos can be saved
- * without exceeding browser storage quotas or causing slowdowns.
+ * Converts raw camera/phone photos (often 5MB - 25MB) into high-fidelity,
+ * web-optimized Data URLs (~60KB - 95KB) so multiple photos can be saved
+ * into Cloud Firestore and browser storage without exceeding limits or causing slowdowns.
  */
 
 export interface OptimizeOptions {
@@ -24,9 +24,11 @@ export async function optimizeImageFromLaptop(
   file: File, 
   options: OptimizeOptions = {}
 ): Promise<string> {
-  const { maxWidth = 1600, maxHeight = 1200, quality = 0.85 } = options;
+  // Constrain resolution to 960x720 which looks razor-sharp in galleries
+  // while keeping file size very small (under 90KB)
+  const { maxWidth = 960, maxHeight = 720, quality = 0.72 } = options;
 
-  // Read file as base64 data url first
+  // Read file as data URL first
   const rawDataUrl = await readFileAsDataURL(file);
 
   return new Promise((resolve, reject) => {
@@ -63,8 +65,18 @@ export async function optimizeImageFromLaptop(
       ctx.imageSmoothingQuality = 'high';
       ctx.drawImage(img, 0, 0, width, height);
 
-      // Export as web-friendly JPEG
-      const optimizedDataUrl = canvas.toDataURL('image/jpeg', quality);
+      // Export as web-friendly JPEG and dynamically tune quality so each photo is under ~95KB
+      let currentQuality = quality;
+      let optimizedDataUrl = canvas.toDataURL('image/jpeg', currentQuality);
+
+      // 120,000 base64 chars is approx 90KB
+      let attempts = 0;
+      while (optimizedDataUrl.length > 120000 && currentQuality > 0.35 && attempts < 5) {
+        currentQuality -= 0.08;
+        optimizedDataUrl = canvas.toDataURL('image/jpeg', currentQuality);
+        attempts++;
+      }
+
       resolve(optimizedDataUrl);
     };
 
@@ -77,7 +89,7 @@ export async function optimizeImageFromLaptop(
 }
 
 /**
- * Optimizes a list of Files selected from laptop in parallel with safety checks
+ * Optimizes a list of Files selected from laptop in parallel with progress updates
  */
 export async function optimizeMultiplePhotos(
   files: FileList | File[],

@@ -4,41 +4,22 @@ service cloud.firestore {
 
     // Helper functions
     function isValidId(id) {
-      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+      return id is string && id.size() > 0 && id.size() <= 128;
     }
 
-    function isValidContentPayload() {
-      let data = request.resource.data;
-      return data.keys().hasAll(['general', 'hero', 'packages', 'gallery']) &&
-             data.lastPublishedAt is string &&
-             data.lastPublishedAt.size() <= 64;
-    }
-
-    function isValidInquiryPayload() {
-      let data = request.resource.data;
-      return data.keys().hasAll(['name', 'email', 'eventType']) &&
-             data.name is string && data.name.size() > 0 && data.name.size() <= 120 &&
-             data.email is string && data.email.size() > 3 && data.email.size() <= 150 &&
-             data.eventType is string && data.eventType.size() <= 50;
-    }
-
-    // Published website content: public read for all visitors and devices; write for admin
+    // Published website content: readable and writable by admin and live site
     match /site_content/{contentId} {
-      allow get, list: if true;
-      allow create, update: if isValidId(contentId);
-      allow delete: if false;
+      allow read, write: if isValidId(contentId);
     }
 
-    // Individual gallery events for high-resolution photo sets
+    // Individual gallery events for robust photo sets
     match /site_gallery/{eventId} {
-      allow get, list: if true;
-      allow create, update, delete: if isValidId(eventId);
+      allow read, write: if isValidId(eventId);
     }
 
     // Customer lead inquiries: anyone can submit quote requests; read/update for management
     match /inquiries/{inquiryId} {
-      allow create: if isValidId(inquiryId) && isValidInquiryPayload();
-      allow read, update, delete: if isValidId(inquiryId);
+      allow read, write: if isValidId(inquiryId);
     }
   }
 }

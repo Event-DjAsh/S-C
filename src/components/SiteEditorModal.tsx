@@ -810,8 +810,8 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
                         categoryLabel: 'Wedding Reception',
                         venue: 'Venue Name, Auckland',
                         location: 'Auckland',
-                        image: content.gallery[0]?.image || '',
-                        images: content.gallery[0]?.images || [content.gallery[0]?.image || ''],
+                        image: '',
+                        images: [],
                         guests: '100 Guests',
                         year: new Date().getFullYear().toString(),
                         highlight: 'Packed dancefloor all night',
@@ -831,7 +831,7 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
                   <div className="flex items-center gap-2 text-stone-300">
                     <Globe className="w-4 h-4 text-purple-400 shrink-0" />
                     <span>
-                      Upload photos from your laptop or modify details below. When ready, click <strong>"Publish Changes to Live Site"</strong> to immediately publish them to the live website for all visitors.
+                      Upload photos from your laptop or modify details below. When ready, click <strong>"Publish to Live Site"</strong> to immediately publish them to the live website for all visitors.
                     </span>
                   </div>
                   <button
@@ -852,6 +852,41 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
                   </button>
                 </div>
 
+                {content.gallery.length === 0 ? (
+                  <div className="text-center py-12 px-4 border border-dashed border-stone-800 rounded-xl bg-stone-900/30">
+                    <div className="w-12 h-12 rounded-full bg-purple-950/60 border border-purple-500/40 flex items-center justify-center mx-auto text-purple-400 mb-3">
+                      <ImageIcon className="w-6 h-6" />
+                    </div>
+                    <h4 className="text-sm font-bold text-white mb-1">Your Gallery is Currently Empty</h4>
+                    <p className="text-xs text-stone-400 max-w-sm mx-auto mb-4">
+                      All previous events have been cleared. Click below to add your new Auckland event and upload photos from your laptop.
+                    </p>
+                    <button
+                      onClick={() => {
+                        const newId = 'gal_' + Date.now();
+                        addGalleryItem({
+                          id: newId,
+                          title: 'New Auckland Event Showcase',
+                          category: 'wedding',
+                          categoryLabel: 'Wedding Reception',
+                          venue: 'Venue Name, Auckland',
+                          location: 'Auckland',
+                          image: '',
+                          images: [],
+                          guests: '100 Guests',
+                          year: new Date().getFullYear().toString(),
+                          highlight: 'Packed dancefloor all night',
+                          description: 'Custom music programming and crisp acoustic audio.'
+                        });
+                        showToast('Added New Gallery Event');
+                      }}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition-colors shadow-md shadow-purple-600/30"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>+ Add Your First Event</span>
+                    </button>
+                  </div>
+                ) : (
                 <div className="space-y-4">
                   {content.gallery.map(item => (
                     <div 
@@ -1088,6 +1123,7 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
                     </div>
                   ))}
                 </div>
+                )}
               </div>
             )}
 

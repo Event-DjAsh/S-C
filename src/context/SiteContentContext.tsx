@@ -297,6 +297,7 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
+        const galleryList = Array.isArray(parsed.gallery) ? parsed.gallery : DEFAULT_GALLERY;
         return {
           ...DEFAULT_STATE,
           ...parsed,
@@ -305,7 +306,7 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
           services: parsed.services?.length ? parsed.services : DEFAULT_SERVICES,
           packages: parsed.packages?.length ? parsed.packages : DJ_PACKAGES,
           addOns: parsed.addOns?.length ? parsed.addOns : PACKAGE_ADD_ONS,
-          gallery: (parsed.gallery?.length ? parsed.gallery : DEFAULT_GALLERY).map((item: any) => ({
+          gallery: galleryList.map((item: any) => ({
             ...item,
             images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image].filter(Boolean)
           })),
@@ -341,11 +342,18 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
 
         unsubscribe = onSnapshot(
           contentDocRef,
+          { includeMetadataChanges: false },
           async (snapshot) => {
             if (isCancelled) return;
+            if (snapshot.metadata.hasPendingWrites) {
+              // Ignore local write echo from active session
+              return;
+            }
+
             if (snapshot.exists()) {
               const cloudData = snapshot.data();
               if (cloudData) {
+                const cloudGallery = Array.isArray(cloudData.gallery) ? cloudData.gallery : DEFAULT_GALLERY;
                 const normalized: SiteContentState = {
                   ...DEFAULT_STATE,
                   ...cloudData,
@@ -354,7 +362,7 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
                   services: cloudData.services?.length ? cloudData.services : DEFAULT_SERVICES,
                   packages: cloudData.packages?.length ? cloudData.packages : DJ_PACKAGES,
                   addOns: cloudData.addOns?.length ? cloudData.addOns : PACKAGE_ADD_ONS,
-                  gallery: (cloudData.gallery?.length ? cloudData.gallery : DEFAULT_GALLERY).map((item: any) => ({
+                  gallery: cloudGallery.map((item: any) => ({
                     ...item,
                     images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image].filter(Boolean)
                   })),
