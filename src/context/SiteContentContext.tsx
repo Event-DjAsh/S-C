@@ -1,4 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { doc, setDoc, onSnapshot, collection, addDoc } from 'firebase/firestore';
+import { db, validateFirebaseConnection } from '../firebase';
 import { DJPackage, PackageAddOn, Testimonial } from '../types';
 import { DJ_PACKAGES, PACKAGE_ADD_ONS, TESTIMONIALS, FREQUENTLY_ASKED_QUESTIONS } from '../data/djData';
 
@@ -325,84 +327,148 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return content.lastPublishedAt || null;
   });
 
-  // Automatically fetch published content from the backend server on mount
-  // so every visitor across devices, incognito, and browsers sees the published website
+  // Real-time synchronization with Firestore Cloud Database
+  // This guarantees that updates published from any laptop or browser instantly
+  // propagate to all devices, mobile phones, and public visitors across the web.
   useEffect(() => {
-    let isMounted = true;
-    async function loadPublishedServerContent() {
-      try {
-        const res = await fetch('/api/content');
-        if (!res.ok) return;
-        const serverData = await res.json();
-        if (serverData && isMounted) {
-          const normalized: SiteContentState = {
-            ...DEFAULT_STATE,
-            ...serverData,
-            general: { ...DEFAULT_STATE.general, ...(serverData.general || {}) },
-            hero: { ...DEFAULT_STATE.hero, ...(serverData.hero || {}) },
-            services: serverData.services?.length ? serverData.services : DEFAULT_SERVICES,
-            packages: serverData.packages?.length ? serverData.packages : DJ_PACKAGES,
-            addOns: serverData.addOns?.length ? serverData.addOns : PACKAGE_ADD_ONS,
-            gallery: (serverData.gallery?.length ? serverData.gallery : DEFAULT_GALLERY).map((item: any) => ({
-              ...item,
-              images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image].filter(Boolean)
-            })),
-            testimonials: serverData.testimonials?.length ? serverData.testimonials : TESTIMONIALS,
-            faqs: serverData.faqs?.length ? serverData.faqs : FREQUENTLY_ASKED_QUESTIONS,
-            inquiries: serverData.inquiries || [],
-            security: { ...DEFAULT_STATE.security, ...(serverData.security || {}) },
-            lastPublishedAt: serverData.lastPublishedAt || undefined
-          };
+    let unsubscribe: (() => void) | null = null;
+    let isCancelled = false;
 
-          setContent(normalized);
-          if (serverData.lastPublishedAt) {
-            setLastPublishedAt(serverData.lastPublishedAt);
+    async function initRealtimeCloudSync() {
+      try {
+        await validateFirebaseConnection();
+        const contentDocRef = doc(db, 'site_content', 'published');
+
+        unsubscribe = onSnapshot(
+          contentDocRef,
+          async (snapshot) => {
+            if (isCancelled) return;
+            if (snapshot.exists()) {
+              const cloudData = snapshot.data();
+              if (cloudData) {
+                const normalized: SiteContentState = {
+                  ...DEFAULT_STATE,
+                  ...cloudData,
+                  general: { ...DEFAULT_STATE.general, ...(cloudData.general || {}) },
+                  hero: { ...DEFAULT_STATE.hero, ...(cloudData.hero || {}) },
+                  services: cloudData.services?.length ? cloudData.services : DEFAULT_SERVICES,
+                  packages: cloudData.packages?.length ? cloudData.packages : DJ_PACKAGES,
+                  addOns: cloudData.addOns?.length ? cloudData.addOns : PACKAGE_ADD_ONS,
+                  gallery: (cloudData.gallery?.length ? cloudData.gallery : DEFAULT_GALLERY).map((item: any) => ({
+                    ...item,
+                    images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image].filter(Boolean)
+                  })),
+                  testimonials: cloudData.testimonials?.length ? cloudData.testimonials : TESTIMONIALS,
+                  faqs: cloudData.faqs?.length ? cloudData.faqs : FREQUENTLY_ASKED_QUESTIONS,
+                  inquiries: cloudData.inquiries || [],
+                  security: { ...DEFAULT_STATE.security, ...(cloudData.security || {}) },
+                  lastPublishedAt: cloudData.lastPublishedAt || undefined
+                };
+
+                setContent(normalized);
+                if (cloudData.lastPublishedAt) {
+                  setLastPublishedAt(cloudData.lastPublishedAt);
+                }
+                try {
+                  localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+                } catch (e) {
+                  // localStorage quota warning ignored
+                }
+              }
+            } else {
+              // Initial cloud database seed if document doesn't exist yet
+              try {
+                const localSaved = localStorage.getItem(STORAGE_KEY);
+                const initialPayload = localSaved ? JSON.parse(localSaved) : DEFAULT_STATE;
+                await setDoc(contentDocRef, {
+                  ...initialPayload,
+                  lastPublishedAt: initialPayload.lastPublishedAt || new Date().toISOString()
+                }, { merge: true });
+              } catch (seedErr) {
+                console.warn('Initial cloud seed notice:', seedErr);
+              }
+            }
+          },
+          (err) => {
+            console.warn('Firestore onSnapshot listener notice:', err);
           }
-        } else if (!serverData) {
-          // If server file is empty, seed it with initial content
-          publishToServer(content);
-        }
+        );
       } catch (err) {
-        console.warn('Could not connect to /api/content, falling back to local storage:', err);
+        console.warn('Firestore initialization notice:', err);
       }
     }
 
-    loadPublishedServerContent();
-    return () => { isMounted = false; };
+    initRealtimeCloudSync();
+
+    return () => {
+      isCancelled = true;
+      if (unsubscribe) unsubscribe();
+    };
   }, []);
 
-  const publishToServer = async (dataToPublish: SiteContentState): Promise<{ success: boolean; message?: string }> => {
+  const publishToLiveWebsite = async (): Promise<{ success: boolean; message?: string }> => {
+    setIsPublishing(true);
+    const timestamp = new Date().toISOString();
+    const payloadToPublish: SiteContentState = {
+      ...content,
+      lastPublishedAt: timestamp
+    };
+
+    let firestoreSuccess = false;
+    let firestoreErrorMsg = '';
+
+    // 1. Publish directly to Firestore Cloud Database
     try {
-      setIsPublishing(true);
-      const res = await fetch('/api/content', {
+      const contentDocRef = doc(db, 'site_content', 'published');
+      await setDoc(contentDocRef, payloadToPublish, { merge: true });
+      firestoreSuccess = true;
+
+      // Also replicate each gallery item to site_gallery collection for robust access
+      for (const item of payloadToPublish.gallery) {
+        try {
+          await setDoc(doc(db, 'site_gallery', item.id), item, { merge: true });
+        } catch (itemErr) {
+          // ignore single item warning
+        }
+      }
+    } catch (err: any) {
+      console.error('Firestore publish error:', err);
+      firestoreErrorMsg = err?.message || 'Cloud database write error';
+    }
+
+    // 2. Secondary sync to Node Express backend API (if available)
+    try {
+      await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(dataToPublish)
+        body: JSON.stringify(payloadToPublish)
       });
-      if (res.ok) {
-        const result = await res.json();
-        const timestamp = result.lastPublishedAt || new Date().toISOString();
-        setLastPublishedAt(timestamp);
-        setContent(prev => ({ ...prev, lastPublishedAt: timestamp }));
-        return { success: true, message: 'Website successfully published live!' };
-      }
-      return { 
-        success: false, 
-        message: `Server returned status ${res.status}. Your changes are safely saved in local storage.` 
-      };
-    } catch (e: any) {
-      console.warn('Publish to server endpoint skipped/deferred:', e);
-      return { 
-        success: false, 
-        message: 'Saved to local browser storage.' 
-      };
-    } finally {
-      setIsPublishing(false);
+    } catch (e) {
+      // server API fallback is optional when Firestore is primary
     }
-  };
 
-  const publishToLiveWebsite = async (): Promise<{ success: boolean; message?: string }> => {
-    return await publishToServer(content);
+    // 3. Fast offline cache
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payloadToPublish));
+    } catch (e) {
+      // ignore
+    }
+
+    setLastPublishedAt(timestamp);
+    setContent(prev => ({ ...prev, lastPublishedAt: timestamp }));
+    setIsPublishing(false);
+
+    if (firestoreSuccess) {
+      return { 
+        success: true, 
+        message: '🚀 Live Website & Gallery Published! Your updates are now visible across all devices worldwide.' 
+      };
+    } else {
+      return { 
+        success: false, 
+        message: `Saved locally. Cloud sync: ${firestoreErrorMsg || 'Please try again'}` 
+      };
+    }
   };
 
   // Auto-sync state to localStorage as immediate offline cache
@@ -532,6 +598,12 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ...prev,
       inquiries: [newInquiry, ...(prev.inquiries || [])]
     }));
+
+    // Persist to Cloud Firestore inquiries collection
+    addDoc(collection(db, 'inquiries'), {
+      ...newInquiry,
+      timestamp: new Date().toISOString()
+    }).catch(e => console.warn('Inquiry Firestore sync deferred:', e));
 
     // Also persist to server
     fetch('/api/inquiries', {

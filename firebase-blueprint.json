@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "SiteContent": {
+      "title": "SiteContent",
+      "description": "Published website configuration including gallery, services, packages, and hero text",
+      "type": "object",
+      "properties": {
+        "general": {
+          "type": "object",
+          "description": "General business information, contact details, social links, and SEO tags"
+        },
+        "hero": {
+          "type": "object",
+          "description": "Hero section titles, subtitles, callouts, and badge labels"
+        },
+        "packages": {
+          "type": "array",
+          "description": "Available DJ packages and pricing"
+        },
+        "addOns": {
+          "type": "array",
+          "description": "Optional equipment and lighting add-ons"
+        },
+        "gallery": {
+          "type": "array",
+          "description": "Event portfolio gallery showcase items and photo sets"
+        },
+        "services": {
+          "type": "array",
+          "description": "Wedding, corporate, and private party service details"
+        },
+        "testimonials": {
+          "type": "array",
+          "description": "Client reviews and ratings"
+        },
+        "faqs": {
+          "type": "array",
+          "description": "Frequently asked questions and answers"
+        },
+        "lastPublishedAt": {
+          "type": "string",
+          "description": "ISO timestamp of when this version was published"
+        }
+      },
+      "required": ["general", "hero", "packages", "gallery", "lastPublishedAt"]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Lead inquiry submission from the website booking form",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Customer full name"
+        },
+        "email": {
+          "type": "string",
+          "description": "Customer contact email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Customer contact phone number"
+        },
+        "eventType": {
+          "type": "string",
+          "description": "Type of event: wedding, corporate, party, or other"
+        },
+        "eventDate": {
+          "type": "string",
+          "description": "Target date of celebration"
+        },
+        "venue": {
+          "type": "string",
+          "description": "Venue name and location"
+        },
+        "guestCount": {
+          "type": "string",
+          "description": "Estimated guest count"
+        },
+        "packageInterest": {
+          "type": "string",
+          "description": "Selected package of interest"
+        },
+        "notes": {
+          "type": "string",
+          "description": "Additional details or musical preferences"
+        },
+        "submittedAt": {
+          "type": "string",
+          "description": "Submission timestamp"
+        },
+        "status": {
+          "type": "string",
+          "description": "Lead status: new, contacted, booked, archived"
+        }
+      },
+      "required": ["name", "email", "eventType", "submittedAt"]
+    }
+  },
+  "firestore": {
+    "/site_content/{contentId}": {
+      "schema": "SiteContent",
+      "description": "Collection storing the global published website content documents"
+    },
+    "/site_gallery/{eventId}": {
+      "schema": "SiteContent",
+      "description": "Collection storing individual gallery showcase events and high-res photo sets"
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": "Inquiry",
+      "description": "Collection storing customer quote requests and booking inquiries"
+    }
+  }
+}
