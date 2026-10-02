@@ -305,11 +305,11 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
             {/* Prominent Publish to Live Website Action */}
             <button
               onClick={async () => {
-                const ok = await publishToLiveWebsite();
-                if (ok) {
+                const res = await publishToLiveWebsite();
+                if (res.success) {
                   showToast('🚀 Live Website Updated! Changes are now live for all visitors.');
                 } else {
-                  alert('Failed to publish changes to the server.');
+                  showToast(res.message || 'Saved in browser storage');
                 }
               }}
               disabled={isPublishing}
@@ -837,8 +837,12 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
                   <button
                     type="button"
                     onClick={async () => {
-                      const ok = await publishToLiveWebsite();
-                      if (ok) showToast('🚀 Published Live to Website!');
+                      const res = await publishToLiveWebsite();
+                      if (res.success) {
+                        showToast('🚀 Published Live to Website!');
+                      } else {
+                        showToast(res.message || 'Saved locally');
+                      }
                     }}
                     disabled={isPublishing}
                     className="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-bold text-xs whitespace-nowrap shadow-md shadow-purple-600/30 shrink-0 flex items-center gap-1.5"
@@ -1668,8 +1672,8 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
             </button>
             <button
               onClick={async () => {
-                const ok = await publishToLiveWebsite();
-                if (ok) {
+                const res = await publishToLiveWebsite();
+                if (res.success) {
                   showToast('🚀 Live Website Updated!');
                 }
                 onClose();

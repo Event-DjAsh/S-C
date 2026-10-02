@@ -8,14 +8,25 @@ var __filename = fileURLToPath(import.meta.url);
 var __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
-  const PORT = parseInt(process.env.PORT || "3000", 10);
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  app.use((_req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type, x-admin-password, Authorization");
+    if (_req.method === "OPTIONS") {
+      return res.sendStatus(200);
+    }
+    next();
+  });
+  app.use(express.json({ limit: "100mb" }));
+  app.use(express.urlencoded({ limit: "100mb", extended: true }));
   const DATA_DIR = path.join(__dirname, "data");
   const CONTENT_FILE = path.join(DATA_DIR, "site-content.json");
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
+  app.get("/api/health", (_req, res) => {
+    res.json({ status: "ok", time: (/* @__PURE__ */ new Date()).toISOString() });
+  });
   app.get("/api/content", (_req, res) => {
     try {
       if (fs.existsSync(CONTENT_FILE)) {
@@ -40,7 +51,7 @@ async function startServer() {
         lastPublishedAt: publishedTimestamp
       };
       fs.writeFileSync(CONTENT_FILE, JSON.stringify(payload, null, 2), "utf-8");
-      console.log(`[CMS] Content successfully published to live website at ${publishedTimestamp}`);
+      console.log(`[CMS] Content successfully published at ${publishedTimestamp}`);
       return res.json({ success: true, lastPublishedAt: publishedTimestamp });
     } catch (err) {
       console.error("Error writing to site-content.json:", err);
@@ -86,9 +97,20 @@ async function startServer() {
       res.sendFile(path.join(__dirname, "dist", "index.html"));
     });
   }
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Sound & Celebration full-stack server running on http://0.0.0.0:${PORT}`);
+  const PRIMARY_PORT = 3e3;
+  app.listen(PRIMARY_PORT, "0.0.0.0", () => {
+    console.log(`Sound & Celebration server running on http://0.0.0.0:${PRIMARY_PORT}`);
   });
+  const ALT_PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : null;
+  if (ALT_PORT && ALT_PORT !== PRIMARY_PORT) {
+    try {
+      app.listen(ALT_PORT, "0.0.0.0", () => {
+        console.log(`Server also listening on secondary port ${ALT_PORT}`);
+      });
+    } catch (e) {
+      console.warn(`Could not bind secondary port ${ALT_PORT}:`, e);
+    }
+  }
 }
 startServer().catch((err) => {
   console.error("Failed to start server:", err);

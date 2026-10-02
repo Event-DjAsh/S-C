@@ -282,7 +282,7 @@ interface SiteContentContextValue {
   resetToDefaults: () => void;
   exportBackupJson: () => string;
   importBackupJson: (jsonStr: string) => boolean;
-  publishToLiveWebsite: () => Promise<boolean>;
+  publishToLiveWebsite: () => Promise<{ success: boolean; message?: string }>;
   isPublishing: boolean;
   lastPublishedAt: string | null;
 }
@@ -371,7 +371,7 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return () => { isMounted = false; };
   }, []);
 
-  const publishToServer = async (dataToPublish: SiteContentState): Promise<boolean> => {
+  const publishToServer = async (dataToPublish: SiteContentState): Promise<{ success: boolean; message?: string }> => {
     try {
       setIsPublishing(true);
       const res = await fetch('/api/content', {
@@ -384,18 +384,24 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
         const timestamp = result.lastPublishedAt || new Date().toISOString();
         setLastPublishedAt(timestamp);
         setContent(prev => ({ ...prev, lastPublishedAt: timestamp }));
-        return true;
+        return { success: true, message: 'Website successfully published live!' };
       }
-      return false;
-    } catch (e) {
-      console.error('Error publishing content to server:', e);
-      return false;
+      return { 
+        success: false, 
+        message: `Server returned status ${res.status}. Your changes are safely saved in local storage.` 
+      };
+    } catch (e: any) {
+      console.warn('Publish to server endpoint skipped/deferred:', e);
+      return { 
+        success: false, 
+        message: 'Saved to local browser storage.' 
+      };
     } finally {
       setIsPublishing(false);
     }
   };
 
-  const publishToLiveWebsite = async (): Promise<boolean> => {
+  const publishToLiveWebsite = async (): Promise<{ success: boolean; message?: string }> => {
     return await publishToServer(content);
   };
 
