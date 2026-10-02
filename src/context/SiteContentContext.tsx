@@ -17,7 +17,8 @@ export interface GalleryItem {
   categoryLabel: string;
   venue: string;
   location: string;
-  image: string;
+  image: string;       // Primary cover photo
+  images?: string[];   // Multiple photos for this event
   guests: string;
   year: string;
   highlight: string;
@@ -99,6 +100,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     venue: 'Mudbrick Vineyard & Restaurant',
     location: 'Waiheke Island',
     image: waihekeSunsetImg,
+    images: [waihekeSunsetImg, heroWeddingImg, weddingReceptionImg],
     guests: '120 Guests',
     year: '2025',
     highlight: 'Outdoor Acoustic Sunset Ceremony to Late-Night Banger Set',
@@ -112,6 +114,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     venue: 'Great Room Ballroom, The Cordis',
     location: 'Central Auckland',
     image: corporateGalaImg,
+    images: [corporateGalaImg, corporateImg],
     guests: '380 Guests',
     year: '2025',
     highlight: 'Keynote Audio, Walk-up Stingers & Neon After-Party',
@@ -125,6 +128,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     venue: 'Markovina Vineyard Estate',
     location: 'Kumeu Wine Country',
     image: weddingReceptionImg,
+    images: [weddingReceptionImg, waihekeSunsetImg],
     guests: '145 Guests',
     year: '2024',
     highlight: 'First Dance Cloud Effect & Packed Floor Until Midnight',
@@ -138,6 +142,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     venue: 'The Cloud & Shed 10',
     location: 'Auckland Waterfront',
     image: corporateImg,
+    images: [corporateImg, corporateGalaImg],
     guests: '260 Guests',
     year: '2024',
     highlight: 'Lounge Deep House into Energetic Celebration Set',
@@ -151,6 +156,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     venue: 'Glasshouse Morningside',
     location: 'Morningside, Auckland',
     image: partyImg,
+    images: [partyImg, heroWeddingImg],
     guests: '95 Guests',
     year: '2024',
     highlight: 'Dual 18" Subwoofers & 2000s Hip-Hop Throwbacks',
@@ -164,6 +170,7 @@ const DEFAULT_GALLERY: GalleryItem[] = [
     venue: 'Cable Bay Vineyards',
     location: 'Waiheke Island',
     image: heroWeddingImg,
+    images: [heroWeddingImg, waihekeSunsetImg],
     guests: '110 Guests',
     year: '2024',
     highlight: 'Sunset Lawn Cocktails & High-Octane Late Set',
@@ -292,7 +299,10 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
           services: parsed.services?.length ? parsed.services : DEFAULT_SERVICES,
           packages: parsed.packages?.length ? parsed.packages : DJ_PACKAGES,
           addOns: parsed.addOns?.length ? parsed.addOns : PACKAGE_ADD_ONS,
-          gallery: parsed.gallery?.length ? parsed.gallery : DEFAULT_GALLERY,
+          gallery: (parsed.gallery?.length ? parsed.gallery : DEFAULT_GALLERY).map((item: any) => ({
+            ...item,
+            images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image].filter(Boolean)
+          })),
           testimonials: parsed.testimonials?.length ? parsed.testimonials : TESTIMONIALS,
           faqs: parsed.faqs?.length ? parsed.faqs : FREQUENTLY_ASKED_QUESTIONS,
           inquiries: parsed.inquiries || [],
@@ -362,12 +372,28 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
   const updateGalleryItem = (id: string, updated: Partial<GalleryItem>) => {
     setContent(prev => ({
       ...prev,
-      gallery: prev.gallery.map(item => item.id === id ? { ...item, ...updated } : item)
+      gallery: prev.gallery.map(item => {
+        if (item.id !== id) return item;
+        const merged = { ...item, ...updated };
+        if (updated.images && updated.images.length > 0 && !updated.image) {
+          merged.image = updated.images[0];
+        }
+        if (updated.image && (!merged.images || !merged.images.includes(updated.image))) {
+          merged.images = [updated.image, ...(merged.images || []).filter(img => img !== updated.image)];
+        }
+        return merged;
+      })
     }));
   };
 
   const addGalleryItem = (item: GalleryItem) => {
-    setContent(prev => ({ ...prev, gallery: [item, ...prev.gallery] }));
+    const images = item.images && item.images.length > 0 ? item.images : [item.image].filter(Boolean);
+    const normalized: GalleryItem = {
+      ...item,
+      image: images[0] || item.image || '',
+      images
+    };
+    setContent(prev => ({ ...prev, gallery: [normalized, ...prev.gallery] }));
   };
 
   const deleteGalleryItem = (id: string) => {
