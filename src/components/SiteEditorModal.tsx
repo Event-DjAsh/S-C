@@ -4,7 +4,7 @@ import {
   Building, Sparkles, DollarSign, Image as ImageIcon, MessageSquare, 
   HelpCircle, Inbox, CheckCircle2, ChevronRight, Sliders, ExternalLink,
   Lock, Eye, EyeOff, LogOut, Key, ShieldCheck, Copy, Check,
-  UploadCloud, Loader2, ImagePlus, Star
+  UploadCloud, Loader2, ImagePlus, Star, Send, Globe
 } from 'lucide-react';
 import { useSiteContent, GalleryItem } from '../context/SiteContentContext';
 import { DJPackage, PackageAddOn, Testimonial } from '../types';
@@ -41,7 +41,10 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
     changeAdminPassword,
     resetToDefaults,
     exportBackupJson,
-    importBackupJson
+    importBackupJson,
+    publishToLiveWebsite,
+    isPublishing,
+    lastPublishedAt
   } = useSiteContent();
 
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -291,13 +294,40 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {toastMessage && (
               <div className="hidden sm:flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-950/80 border border-emerald-800/80 px-3 py-1 rounded-lg animate-in fade-in">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>{toastMessage}</span>
               </div>
             )}
+
+            {/* Prominent Publish to Live Website Action */}
+            <button
+              onClick={async () => {
+                const ok = await publishToLiveWebsite();
+                if (ok) {
+                  showToast('🚀 Live Website Updated! Changes are now live for all visitors.');
+                } else {
+                  alert('Failed to publish changes to the server.');
+                }
+              }}
+              disabled={isPublishing}
+              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition-all shadow-md shadow-purple-600/35 active:scale-95 disabled:opacity-50"
+              title="Publish all updates to the customer-facing live website"
+            >
+              {isPublishing ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Publishing...</span>
+                </>
+              ) : (
+                <>
+                  <Send className="w-3.5 h-3.5" />
+                  <span>Publish to Live Site</span>
+                </>
+              )}
+            </button>
 
             <button
               onClick={handleLogout}
@@ -793,6 +823,28 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
                   >
                     <Plus className="w-3.5 h-3.5" />
                     <span>Add Event to Gallery</span>
+                  </button>
+                </div>
+
+                {/* Publishing Guidance Banner */}
+                <div className="bg-purple-950/40 border border-purple-500/40 rounded-xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+                  <div className="flex items-center gap-2 text-stone-300">
+                    <Globe className="w-4 h-4 text-purple-400 shrink-0" />
+                    <span>
+                      Upload photos from your laptop or modify details below. When ready, click <strong>"Publish Changes to Live Site"</strong> to immediately publish them to the live website for all visitors.
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const ok = await publishToLiveWebsite();
+                      if (ok) showToast('🚀 Published Live to Website!');
+                    }}
+                    disabled={isPublishing}
+                    className="px-3.5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white rounded-lg font-bold text-xs whitespace-nowrap shadow-md shadow-purple-600/30 shrink-0 flex items-center gap-1.5"
+                  >
+                    <Send className="w-3 h-3" />
+                    <span>{isPublishing ? 'Publishing...' : 'Publish Live Now'}</span>
                   </button>
                 </div>
 
@@ -1597,17 +1649,38 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
         </div>
 
         {/* Footer info bar */}
-        <div className="px-6 py-3 border-t border-stone-800 bg-stone-950 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-500 shrink-0 gap-2">
+        <div className="px-6 py-3 border-t border-stone-800 bg-stone-950 flex flex-col sm:flex-row items-center justify-between text-xs text-stone-400 shrink-0 gap-3">
           <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Private Admin Session active. Changes persist automatically.</span>
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+            <span className="text-stone-300">
+              {lastPublishedAt 
+                ? `Published Live: ${new Date(lastPublishedAt).toLocaleDateString()} at ${new Date(lastPublishedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}` 
+                : 'Session active · Ready to publish live'}
+            </span>
           </div>
-          <button
-            onClick={onClose}
-            className="px-5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-lg transition-colors shadow-md shadow-purple-600/30"
-          >
-            Done Editing & View Site
-          </button>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onClose}
+              className="px-4 py-1.5 bg-stone-900 hover:bg-stone-800 text-stone-300 rounded-lg text-xs font-semibold border border-stone-800 transition-colors"
+            >
+              Close
+            </button>
+            <button
+              onClick={async () => {
+                const ok = await publishToLiveWebsite();
+                if (ok) {
+                  showToast('🚀 Live Website Updated!');
+                }
+                onClose();
+              }}
+              disabled={isPublishing}
+              className="px-5 py-1.5 bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs rounded-lg transition-colors shadow-md shadow-purple-600/30 flex items-center gap-1.5"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>{isPublishing ? 'Publishing...' : 'Publish Live & View Site'}</span>
+            </button>
+          </div>
         </div>
 
       </div>

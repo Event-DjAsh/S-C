@@ -87,6 +87,7 @@ export interface SiteContentState {
   faqs: { question: string; answer: string }[];
   inquiries: LeadInquiry[];
   security: SecuritySettings;
+  lastPublishedAt?: string;
 }
 
 const STORAGE_KEY = 'sound_celebration_site_content_v2';
@@ -281,6 +282,9 @@ interface SiteContentContextValue {
   resetToDefaults: () => void;
   exportBackupJson: () => string;
   importBackupJson: (jsonStr: string) => boolean;
+  publishToLiveWebsite: () => Promise<boolean>;
+  isPublishing: boolean;
+  lastPublishedAt: string | null;
 }
 
 const SiteContentContext = createContext<SiteContentContextValue | null>(null);
@@ -306,7 +310,8 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
           testimonials: parsed.testimonials?.length ? parsed.testimonials : TESTIMONIALS,
           faqs: parsed.faqs?.length ? parsed.faqs : FREQUENTLY_ASKED_QUESTIONS,
           inquiries: parsed.inquiries || [],
-          security: { ...DEFAULT_STATE.security, ...(parsed.security || {}) }
+          security: { ...DEFAULT_STATE.security, ...(parsed.security || {}) },
+          lastPublishedAt: parsed.lastPublishedAt || undefined
         };
       }
     } catch (e) {
@@ -315,7 +320,86 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
     return DEFAULT_STATE;
   });
 
-  // Auto-sync state to localStorage
+  const [isPublishing, setIsPublishing] = useState(false);
+  const [lastPublishedAt, setLastPublishedAt] = useState<string | null>(() => {
+    return content.lastPublishedAt || null;
+  });
+
+  // Automatically fetch published content from the backend server on mount
+  // so every visitor across devices, incognito, and browsers sees the published website
+  useEffect(() => {
+    let isMounted = true;
+    async function loadPublishedServerContent() {
+      try {
+        const res = await fetch('/api/content');
+        if (!res.ok) return;
+        const serverData = await res.json();
+        if (serverData && isMounted) {
+          const normalized: SiteContentState = {
+            ...DEFAULT_STATE,
+            ...serverData,
+            general: { ...DEFAULT_STATE.general, ...(serverData.general || {}) },
+            hero: { ...DEFAULT_STATE.hero, ...(serverData.hero || {}) },
+            services: serverData.services?.length ? serverData.services : DEFAULT_SERVICES,
+            packages: serverData.packages?.length ? serverData.packages : DJ_PACKAGES,
+            addOns: serverData.addOns?.length ? serverData.addOns : PACKAGE_ADD_ONS,
+            gallery: (serverData.gallery?.length ? serverData.gallery : DEFAULT_GALLERY).map((item: any) => ({
+              ...item,
+              images: Array.isArray(item.images) && item.images.length > 0 ? item.images : [item.image].filter(Boolean)
+            })),
+            testimonials: serverData.testimonials?.length ? serverData.testimonials : TESTIMONIALS,
+            faqs: serverData.faqs?.length ? serverData.faqs : FREQUENTLY_ASKED_QUESTIONS,
+            inquiries: serverData.inquiries || [],
+            security: { ...DEFAULT_STATE.security, ...(serverData.security || {}) },
+            lastPublishedAt: serverData.lastPublishedAt || undefined
+          };
+
+          setContent(normalized);
+          if (serverData.lastPublishedAt) {
+            setLastPublishedAt(serverData.lastPublishedAt);
+          }
+        } else if (!serverData) {
+          // If server file is empty, seed it with initial content
+          publishToServer(content);
+        }
+      } catch (err) {
+        console.warn('Could not connect to /api/content, falling back to local storage:', err);
+      }
+    }
+
+    loadPublishedServerContent();
+    return () => { isMounted = false; };
+  }, []);
+
+  const publishToServer = async (dataToPublish: SiteContentState): Promise<boolean> => {
+    try {
+      setIsPublishing(true);
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataToPublish)
+      });
+      if (res.ok) {
+        const result = await res.json();
+        const timestamp = result.lastPublishedAt || new Date().toISOString();
+        setLastPublishedAt(timestamp);
+        setContent(prev => ({ ...prev, lastPublishedAt: timestamp }));
+        return true;
+      }
+      return false;
+    } catch (e) {
+      console.error('Error publishing content to server:', e);
+      return false;
+    } finally {
+      setIsPublishing(false);
+    }
+  };
+
+  const publishToLiveWebsite = async (): Promise<boolean> => {
+    return await publishToServer(content);
+  };
+
+  // Auto-sync state to localStorage as immediate offline cache
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(content));
@@ -442,6 +526,13 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
       ...prev,
       inquiries: [newInquiry, ...(prev.inquiries || [])]
     }));
+
+    // Also persist to server
+    fetch('/api/inquiries', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newInquiry)
+    }).catch(err => console.error('Failed to post inquiry to server:', err));
   };
 
   const updateInquiryStatus = (id: string, status: LeadInquiry['status']) => {
@@ -518,7 +609,10 @@ export const SiteContentProvider: React.FC<{ children: React.ReactNode }> = ({ c
         changeAdminPassword,
         resetToDefaults,
         exportBackupJson,
-        importBackupJson
+        importBackupJson,
+        publishToLiveWebsite,
+        isPublishing,
+        lastPublishedAt
       }}
     >
       {children}
