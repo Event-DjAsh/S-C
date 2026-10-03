@@ -37,7 +37,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
         <nav className="hidden lg:flex items-center gap-7 text-sm font-medium text-stone-300">
           <a href="#services" className="hover:text-purple-400 transition-colors">Services</a>
           <a href="#pricing" className="hover:text-purple-400 transition-colors">Packages & Pricing</a>
-          <a href="#gallery" className="hover:text-purple-400 transition-colors">Gallery of Previous Events</a>
+          <a href="#gallery" className="hover:text-purple-400 transition-colors">Gallery</a>
           <a href="#reviews" className="hover:text-purple-400 transition-colors">Reviews</a>
           <a href="#faq" className="hover:text-purple-400 transition-colors">FAQ</a>
         </nav>
@@ -72,35 +72,35 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking }) => {
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 hover:text-purple-400 border-b border-stone-900"
             >
-              DJ Services
+              Services
             </a>
             <a 
               href="#pricing" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 hover:text-purple-400 border-b border-stone-900"
             >
-              Packages & Instant Quote
+              Packages & Pricing
             </a>
             <a 
               href="#gallery" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 hover:text-purple-400 border-b border-stone-900"
             >
-              Gallery of Previous Events
+              Gallery
             </a>
             <a 
               href="#reviews" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 hover:text-purple-400 border-b border-stone-900"
             >
-              Verified Client Reviews
+              Reviews
             </a>
             <a 
               href="#faq" 
               onClick={() => setMobileMenuOpen(false)}
               className="py-2 hover:text-purple-400"
             >
-              Frequently Asked Questions
+              FAQ
             </a>
           </div>
 

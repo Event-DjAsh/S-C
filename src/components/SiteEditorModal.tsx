@@ -9,6 +9,7 @@ import {
 import { useSiteContent, GalleryItem } from '../context/SiteContentContext';
 import { DJPackage, PackageAddOn, Testimonial } from '../types';
 import { optimizeMultiplePhotos } from '../utils/imageOptimizer';
+import heroPartyImg from '../assets/images/hero_dj_party.jpg';
 
 interface SiteEditorModalProps {
   isOpen: boolean;
@@ -606,6 +607,31 @@ export const SiteEditorModal: React.FC<SiteEditorModalProps> = ({ isOpen, onClos
                         onChange={e => updateHero({ showcaseNote: e.target.value })}
                         className="w-full bg-stone-900 border border-stone-800 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500"
                       />
+                    </div>
+                  </div>
+
+                  {/* Active Hero Visual Preview */}
+                  <div className="pt-4 border-t border-stone-800">
+                    <label className="block text-xs font-semibold text-stone-300 mb-2 flex items-center justify-between">
+                      <span className="flex items-center gap-1.5">
+                        <Sparkles className="w-3.5 h-3.5 text-purple-400" />
+                        <span>Active Hero Visual (Real DJ Gig Photo)</span>
+                      </span>
+                      <span className="text-[10px] bg-purple-950 text-purple-300 border border-purple-500/40 px-2 py-0.5 rounded-full font-semibold">
+                        Real Gig Perspective
+                      </span>
+                    </label>
+                    <div className="relative rounded-xl overflow-hidden border border-stone-800 aspect-[16/9] max-w-lg bg-stone-950">
+                      <img 
+                        src={heroPartyImg} 
+                        alt="Hero Live Party" 
+                        className="w-full h-full object-cover"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute bottom-2 left-2 right-2 bg-stone-950/85 backdrop-blur-md px-3 py-1.5 rounded-lg border border-stone-800/80 text-[11px] text-stone-300 flex items-center justify-between">
+                        <span className="font-semibold text-white">{content.hero.showcaseVenue}</span>
+                        <span className="text-purple-300">{content.hero.showcaseNote}</span>
+                      </div>
                     </div>
                   </div>
                 </div>

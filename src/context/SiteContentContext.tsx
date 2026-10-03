@@ -242,8 +242,8 @@ const DEFAULT_STATE: SiteContentState = {
     reviewsCount: '54+',
     complianceRate: '100%',
     insuranceAmount: '$10M',
-    showcaseVenue: 'Mudbrick Vineyard, Waiheke',
-    showcaseNote: 'Full-Day Wedding Audio & Late-Night Set'
+    showcaseVenue: 'Live DJ Booth & Packed Dancefloor',
+    showcaseNote: 'Real Event Atmosphere & Serato Live Mixing'
   },
   services: DEFAULT_SERVICES,
   packages: DJ_PACKAGES,

@@ -1,6 +1,6 @@
 import React from 'react';
-import { ArrowRight, Images, Sparkles, MapPin, Award } from 'lucide-react';
-import heroImage from '../assets/images/hero_dj_wedding_1790753841000.jpg';
+import { ArrowRight, Images, MapPin, Award } from 'lucide-react';
+import heroPartyImg from '../assets/images/hero_dj_party.jpg';
 import { useSiteContent } from '../context/SiteContentContext';
 
 interface HeroProps {
@@ -101,8 +101,8 @@ export const Hero: React.FC<HeroProps> = ({ onQuoteClick, onListenClick }) => {
           <div className="lg:col-span-5 relative">
             <div className="relative rounded-2xl overflow-hidden border border-stone-800 hover:border-purple-500/50 transition-colors bg-stone-900 shadow-2xl group">
               <img 
-                src={heroImage} 
-                alt="Professional wedding DJ performing at an Auckland luxury vineyard venue with warm lighting and dancing crowd"
+                src={heroPartyImg} 
+                alt="Live DJ booth and party atmosphere with crowd dancing, Serato waveforms, and DJ controller"
                 className="w-full aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105"
                 referrerPolicy="no-referrer"
               />
@@ -124,12 +124,6 @@ export const Hero: React.FC<HeroProps> = ({ onQuoteClick, onListenClick }) => {
                   Live Showcase
                 </span>
               </div>
-            </div>
-
-            {/* Subtle decorative cue */}
-            <div className="hidden sm:flex items-center gap-2 mt-3 text-xs text-stone-500 justify-end">
-              <Sparkles className="w-3.5 h-3.5 text-purple-400/80" />
-              <span>Pioneer DJ & QSC Concert Audio Standard</span>
             </div>
           </div>
 

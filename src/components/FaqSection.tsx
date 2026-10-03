@@ -20,7 +20,7 @@ export const FaqSection: React.FC = () => {
             <span>Common Questions</span>
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white font-display">
-            Auckland DJ Services FAQ
+            Frequently Asked Questions
           </h2>
           <p className="mt-3 text-stone-300 text-sm sm:text-base">
             Everything you need to know about our Auckland event audio, sound limiter compliance, and logistics.

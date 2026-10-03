@@ -81,10 +81,10 @@ export const Footer: React.FC<FooterProps> = ({ onAdminTrigger }) => {
               Navigation
             </div>
             <ul className="space-y-2">
-              <li><a href="#services" className="hover:text-purple-400 transition-colors">DJ Services</a></li>
+              <li><a href="#services" className="hover:text-purple-400 transition-colors">Services</a></li>
               <li><a href="#pricing" className="hover:text-purple-400 transition-colors">Packages & Pricing</a></li>
-              <li><a href="#gallery" className="hover:text-purple-400 transition-colors">Gallery of Previous Events</a></li>
-              <li><a href="#reviews" className="hover:text-purple-400 transition-colors">Client Testimonials</a></li>
+              <li><a href="#gallery" className="hover:text-purple-400 transition-colors">Gallery</a></li>
+              <li><a href="#reviews" className="hover:text-purple-400 transition-colors">Reviews</a></li>
               <li><a href="#faq" className="hover:text-purple-400 transition-colors">FAQ</a></li>
             </ul>
           </div>
